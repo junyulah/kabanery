@@ -1,13 +1,13 @@
 'use strict';
 
-
 let util = require('./util');
 
 let {
     isObject,
     isFunction,
     get,
-    authProp
+    authProp,
+    merge
 } = util;
 
 let {
@@ -33,6 +33,8 @@ let {
  * f: render function
  *
  * n: node to be rendered
+ *
+ * TODO update an object to update all related parts
  */
 
 const BIND_RENDER = 'bind-render'; // (d, f, n)
@@ -45,8 +47,8 @@ const BIND_ATTACH = 'bind-attach';
 let parseComponentStr = (str) => {
     let parts = str.split(':');
     return {
-        dataPath: (parts[1] || '').trim(),
-        viewerPath: parts[0].trim()
+        dataPath: (parts[0] || '').trim(),
+        viewerPath: parts[1] === undefined ? undefined : parts[1].trim()
     };
 };
 
@@ -69,6 +71,9 @@ let wrapData = (data, viewer, node, tpl) => {
     set(obj, 'viewer', viewer);
     set(obj, 'node', node);
     set(obj, 'tpl', tpl);
+
+    // unique for list ? memory leak problem ????? simple first
+    //
     set(data, '__render', obj);
 };
 
@@ -130,14 +135,21 @@ let bindAttach = (node, context) => {
     }
 };
 
+let defViewer = (data, tpl) => expandNode(tpl, data);
+
 let expandRenderPlacer = (node, context) => {
     let str = node.getAttribute(BIND_RENDER) || '';
     let {
         dataPath, viewerPath
     } = parseComponentStr(str);
 
-    let data = get(context, dataPath),
+    let data = get(context, dataPath);
+    let viewer = null;
+    if (viewerPath !== undefined) {
         viewer = get(context, viewerPath);
+    } else {
+        viewer = defViewer;
+    }
 
     apply(viewer, data, node);
 };
@@ -167,13 +179,22 @@ let genNode = (viewer, data, tpl) => {
 
 /**
  * TODO expand argument from special data to general data
+ *
+ * TODO support multiple viewers. one data may reflect multiple views.
+ *
+ * refator: TODO update by view not by data
+ *
+ * static problem: append view to data only
  */
-let update = (item) => {
+let update = (item, props) => {
     if (!isObject(item)) {
         throw new TypeError(`item should be object, but got ${item} and the type is ${typeof item}`);
     }
+    merge(item, props);
     let renderOpts = item.__render;
-    apply(renderOpts.viewer, item, renderOpts.node);
+    if (renderOpts) {
+        return apply(renderOpts.viewer, item, renderOpts.node);
+    }
 };
 
 // TODO optimze event binding

@@ -86,7 +86,15 @@ let hasOwnProperty = (obj, key) => {
     return false;
 };
 
+let merge = (map1, map2) => {
+    for (let name in map2) {
+        map1[name] = map2[name];
+    }
+    return map1;
+};
+
 module.exports = {
+    merge,
     isPromise,
     isString,
     isArray,
