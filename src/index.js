@@ -39,6 +39,7 @@ let {
 
 const BIND_RENDER = 'bind-render'; // (d, f, n)
 const BIND_DATA = 'bind-data';
+const BIND_ACTION = 'bind-action';
 
 // nodePath: valuePath; nodePath: valuePath
 // textContext: a.b.c; style: e.f
@@ -199,14 +200,24 @@ let update = (item, props) => {
 
 // TODO optimze event binding
 let bindAction = (node, context) => {
-    let str = node.getAttribute('bind-action');
+    let str = node.getAttribute(BIND_ACTION) || '';
+    let lines = str.split(';');
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        if (line) {
+            bindActionItem(node, context, line);
+        }
+    }
+};
+
+let bindActionItem = (node, context, str) => {
     let parts = str.split(':');
     let type = parts[0].trim(),
         actionPath = (parts[1] || '').trim();
     if (!actionPath) return;
     let fun = get(context, actionPath);
     if (!isFunction(fun)) {
-        console && console.warn(`when bind event on node, missing function for path ${actionPath}, in context ${context}.`); // eslint-disable-line
+        console && console.warn(`when bind event on node, missing function for path ${actionPath}, in context ${context}. function path is ${actionPath}`); // eslint-disable-line
         return;
     }
     //
