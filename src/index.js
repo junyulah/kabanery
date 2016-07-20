@@ -3,6 +3,10 @@
 let util = require('./util');
 
 let {
+    n, svgn
+} = require('./n');
+
+let {
     isObject,
     isFunction,
     get,
@@ -229,7 +233,7 @@ let isRenderPlacer = (node) => {
 };
 
 let isActionNode = (node) => {
-    return node.hasAttribute && node.hasAttribute('bind-action');
+    return node.hasAttribute && node.hasAttribute(BIND_ACTION);
 };
 
 let isAttachNode = (node) => {
@@ -238,5 +242,7 @@ let isAttachNode = (node) => {
 
 module.exports = {
     render: expandNode,
-    update
+    update,
+    n,
+    svgn
 };
