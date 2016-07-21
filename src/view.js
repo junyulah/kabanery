@@ -8,7 +8,7 @@ let {
 /**
  * render function: (data) => node
  */
-module.exports = (render) => {
+module.exports = (render, construct) => {
     let node = null,
         data = null;
 
@@ -33,6 +33,7 @@ module.exports = (render) => {
 
         // only run initor when construct view
         initor && initor(data, ctx);
+        construct && construct(data, ctx);
         return node;
     };
 };
