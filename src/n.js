@@ -2,15 +2,19 @@
 
 let ncn = require('ncn');
 
-let cn = (typen) => (tagName, attributes, childExp, mount) => {
-    let {
-        attrMap, eventMap
-    } = splitAttribues(attributes);
+let cn = (typen) => (tagName, attributes, childExp) => {
+    let node = null;
+    if (attributes && typeof attributes === 'object' && typeof attributes.length !== 'number') {
+        let {
+            attrMap, eventMap
+        } = splitAttribues(attributes);
 
-    let node = typen(tagName, attrMap, childExp, mount);
-
-    // tmp solution
-    bindEvents(node, eventMap);
+        node = typen(tagName, attrMap, childExp);
+        // tmp solution
+        bindEvents(node, eventMap);
+    } else {
+        node = typen(tagName, attributes, childExp);
+    }
 
     // bind event
     return node;

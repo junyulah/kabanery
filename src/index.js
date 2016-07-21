@@ -6,6 +6,8 @@ let {
     n, svgn
 } = require('./n');
 
+let view = require('./view');
+
 let {
     isObject,
     isFunction,
@@ -244,5 +246,6 @@ module.exports = {
     render: expandNode,
     update,
     n,
-    svgn
+    svgn,
+    view
 };

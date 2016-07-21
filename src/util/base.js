@@ -31,6 +31,7 @@ let set = (sandbox, name = '', value) => {
     }
 
     parent[parts[parts.length - 1]] = value;
+    return true;
 };
 
 /**
