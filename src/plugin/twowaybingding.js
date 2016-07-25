@@ -6,10 +6,8 @@ let {
 
 module.exports = (obj, path) => (tagName, attributes, childExp) => {
     let value = get(obj, path, '');
-    if (tagName === 'INPUT') {
-        if (!attributes.value) {
-            attributes.value = value;
-        }
+    if (tagName === 'input') {
+        attributes.value = value;
     } else {
         childExp.unshift(value);
     }
