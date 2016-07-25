@@ -3,16 +3,16 @@
 /**
  * a.b.c
  */
-let get = (sandbox, name = '') => {
+let get = (sandbox, name = '', def = null) => {
     name = name.trim();
     let parts = !name ? [] : name.split('.');
     let parent = sandbox;
-    if (!parent) return null;
+    if (!parent) return def;
     for (let i = 0; i < parts.length; i++) {
         let part = parts[i];
         parent = parent[part];
         // avoid exception
-        if (!parent) return null;
+        if (!parent) return def;
     }
     return parent;
 };
