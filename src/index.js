@@ -1,7 +1,7 @@
 'use strict';
 
 let {
-    n, svgn
+    n, svgn, bindPlugs
 } = require('./n');
 
 let plugs = require('./plugin');
@@ -12,5 +12,6 @@ module.exports = {
     n,
     svgn,
     view,
-    plugs
+    plugs,
+    bindPlugs
 };

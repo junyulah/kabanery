@@ -12,8 +12,8 @@ let cn = (create) => {
         } = parseArgs(args);
 
         // plugin
-
         runPlugins(attributes['plugin'], tagName, attributes, childExp);
+
         let {
             attrMap, eventMap
         } = splitAttribues(attributes);
@@ -24,6 +24,19 @@ let cn = (create) => {
 
         return node;
     };
+};
+
+let bindPlugs = (typen, plugs = []) => (...args) => {
+    let {
+        tagName, attributes, childExp
+    } = parseArgs(args);
+
+    let oriPlugs = attributes.plugin = attributes.plugin || [];
+    attributes.plugin = oriPlugs.concat(plugs);
+
+    let node = typen(tagName, attributes, childExp);
+
+    return node;
 };
 
 let runPlugins = (plugs = [], tagName, attributes, childExp) => {
@@ -58,5 +71,6 @@ let bindEvents = (node, eventMap) => {
 
 module.exports = {
     n: cn(createElement),
-    svgn: cn(createSvgElement)
+    svgn: cn(createSvgElement),
+    bindPlugs
 };
