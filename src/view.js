@@ -16,7 +16,7 @@ module.exports = (render, construct) => {
         set(data, path, value);
         // TODO diff node, opt algo
         let newNode = render(data, ctx);
-        node.parentNode.replaceChild(newNode, node);
+        node.parentNode && node.parentNode.replaceChild(newNode, node);
         node = newNode;
     };
 
