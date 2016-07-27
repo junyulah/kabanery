@@ -4,6 +4,8 @@ let {
     createElement, createSvgElement, parseArgs, nodeGener
 } = require('ncn');
 
+// TODO general proxy n way
+
 let cn = (create) => {
     let nodeGen = nodeGener(create);
     return (...args) => {
@@ -65,7 +67,8 @@ let splitAttribues = (attributes) => {
 
 let bindEvents = (node, eventMap) => {
     for (let name in eventMap) {
-        node.addEventListener(name, eventMap[name]);
+        let handler = eventMap[name];
+        node.addEventListener(name, handler);
     }
 };
 
