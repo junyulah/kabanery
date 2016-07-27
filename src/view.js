@@ -25,8 +25,6 @@ module.exports = (render, construct) => {
             node = newNode;
         };
 
-        update.id = new Date().getTime() + '-' + Math.random();
-
         let ctx = {
             update
         };
