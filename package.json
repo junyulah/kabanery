@@ -22,7 +22,8 @@
         "url": "https://github.com/LoveKino/kabanery/issues"
     },
     "homepage": "https://github.com/LoveKino/kabanery#readme",
-    "dependencies": {
+    "dependencies": {},
+    "link_dependencies": {
         "ncn": "~0.0.1"
     }
 }
