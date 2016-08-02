@@ -23,11 +23,14 @@ module.exports = (render, construct) => {
             let newNode = render(data, ctx);
             node.parentNode && node.parentNode.replaceChild(newNode, node);
             node = newNode;
+            return node;
         };
+
+        let getNode = () => node;
 
         let ctx = {
             update,
-            node
+            getNode
         };
         // TODO need mount event
 
