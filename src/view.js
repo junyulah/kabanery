@@ -26,8 +26,10 @@ module.exports = (render, construct) => {
         };
 
         let ctx = {
-            update
+            update,
+            node
         };
+        // TODO need mount event
 
         data = obj;
         if (!isObject(data)) {
