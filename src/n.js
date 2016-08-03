@@ -4,23 +4,27 @@ let {
     createElement, createSvgElement, parseArgs, nodeGener
 } = require('ncn');
 
+let {
+    bindEvents
+} = require('./event');
+
 // TODO general proxy n way
 
 let cn = (create) => {
     let nodeGen = nodeGener(create);
     return (...args) => {
         let {
-            tagName, attributes, childExp
+            tagName, attributes, childs
         } = parseArgs(args);
 
         // plugin
-        runPlugins(attributes['plugin'], tagName, attributes, childExp);
+        runPlugins(attributes['plugin'], tagName, attributes, childs);
 
         let {
             attrMap, eventMap
         } = splitAttribues(attributes);
 
-        let node = nodeGen(tagName, attrMap, childExp);
+        let node = nodeGen(tagName, attrMap, childs);
         // tmp solution
         bindEvents(node, eventMap);
 
@@ -30,13 +34,13 @@ let cn = (create) => {
 
 let bindPlugs = (typen, plugs = []) => (...args) => {
     let {
-        tagName, attributes, childExp
+        tagName, attributes, childs
     } = parseArgs(args);
 
     let oriPlugs = attributes.plugin = attributes.plugin || [];
     attributes.plugin = oriPlugs.concat(plugs);
 
-    let node = typen(tagName, attributes, childExp);
+    let node = typen(tagName, attributes, childs);
 
     return node;
 };
@@ -63,13 +67,6 @@ let splitAttribues = (attributes) => {
         attrMap,
         eventMap
     };
-};
-
-let bindEvents = (node, eventMap) => {
-    for (let name in eventMap) {
-        let handler = eventMap[name];
-        node.addEventListener(name, handler);
-    }
 };
 
 module.exports = {
