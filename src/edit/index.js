@@ -2,22 +2,46 @@
 
 let {
     moveNodeEvent, clearBelow
-} = require('./event');
+} = require('../event');
+
+let {
+    hasOwnProperty
+} = require('../util');
+
+let getAttributeMap = (attributes = []) => {
+    let map = {};
+    for (let i = 0; i < attributes.length; i++) {
+        let {
+            name, value
+        } = attributes[i];
+        map[name] = value;
+    }
+    return map;
+};
 
 let applyAttibutes = (node, newNode) => {
     // attributes
-    let orinAttrs = node.attributes || [];
-    for (let i = 0; i < orinAttrs.length; i++) {
-        node.removeAttribute(orinAttrs[i].name);
+    let orinAttrMap = getAttributeMap(node.attributes);
+    let newAttrMap = getAttributeMap(newNode.attributes);
+
+    // update and remove
+    for (let name in orinAttrMap) {
+        if (hasOwnProperty(newAttrMap, name)) {
+            let orinValue = orinAttrMap[name];
+            let newValue = newAttrMap[name];
+            if (newValue !== orinValue) {
+                node.setAttribute(name, newValue);
+            }
+        } else {
+            node.removeAttribute(name);
+        }
     }
 
-    //
-    let newAttrs = newNode.attributes || [];
-    for (let i = 0; i < newAttrs.length; i++) {
-        let {
-            name, value
-        } = newAttrs[i];
-        node.setAttribute(name, value);
+    // append
+    for (let name in newAttrMap) {
+        if (hasOwnProperty(orinAttrMap, name)) {
+            node.setAttribute(name, newAttrMap[name]);
+        }
     }
 };
 
@@ -38,15 +62,22 @@ let removeOldNode = (oldNode) => {
     oldNode.parentNode.removeChild(oldNode);
 };
 
+// TODO using key
 let diffNode = (node, newNode) => {
     // attributes
     applyAttibutes(node, newNode);
     // events
     moveNodeEvent(node, newNode);
     // transfer context
-    if(newNode.ctx) {
+    if (newNode.ctx) {
         newNode.ctx.transferCtx(node);
     }
+    diffChilds(node, newNode);
+
+    return node;
+};
+
+let diffChilds = (node, newNode) => {
     //
     let oriChildNodes = node.childNodes;
     let newChildNodes = newNode.childNodes;
@@ -71,15 +102,15 @@ let diffNode = (node, newNode) => {
             convertNode(orinChild, newChild);
         }
     }
-
-    return node;
 };
 
 // TODO events problem
 let convertNode = (node, newNode) => {
     if (!node) {
         return newNode;
-    } else if (node.tagName !== newNode.tagName) {
+    }
+    // TODO problems performance
+    if (node.tagName !== newNode.tagName) {
         return replaceDirectly(node, newNode);
     } else {
         return diffNode(node, newNode);

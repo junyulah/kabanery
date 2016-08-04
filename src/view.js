@@ -29,7 +29,9 @@ module.exports = (render, construct, {
 
         let renderView = () => {
             let newNode = render(data, ctx);
+
             node = edit(node, newNode);
+
             afterRender && afterRender(ctx);
 
             node.ctx = ctx;
