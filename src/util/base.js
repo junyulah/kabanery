@@ -94,6 +94,26 @@ let merge = (map1, map2) => {
     return map1;
 };
 
+let defEq = (v1, v2) => v1 === v2;
+
+let contain = (list, item, eq = defEq) => {
+    for (let i = 0; i < list.length; i++) {
+        if (eq(item, list[i])) {
+            return true;
+        }
+    }
+    return false;
+};
+
+let findIndex = (list, item, eq = defEq) => {
+    for (let i = 0; i < list.length; i++) {
+        if (eq(item, list[i])) {
+            return i;
+        }
+    }
+    return -1;
+};
+
 module.exports = {
     merge,
     isPromise,
@@ -104,5 +124,7 @@ module.exports = {
     get,
     set,
     defineProperty,
-    hasOwnProperty
+    hasOwnProperty,
+    contain,
+    findIndex
 };

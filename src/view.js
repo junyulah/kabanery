@@ -6,9 +6,7 @@ let {
     isFunction
 } = require('./util');
 
-let {
-    clearBelow
-} = require('./event');
+let edit = require('./edit');
 
 /**
  * render function: (data) => node
@@ -30,20 +28,26 @@ module.exports = (render, construct, {
         };
 
         let renderView = () => {
-            clearBelow(node);
-            //
             let newNode = render(data, ctx);
-            edit(node, newNode);
-            node = newNode;
+            node = edit(node, newNode);
             afterRender && afterRender(ctx);
+
+            node.ctx = ctx;
             return node;
         };
 
         let getNode = () => node;
 
+        // TODO refator
+        let transferCtx = (newNode) => {
+            node = newNode;
+            newNode.ctx = ctx;
+        };
+
         let ctx = {
             update,
-            getNode
+            getNode,
+            transferCtx
         };
 
         // data generator
@@ -65,60 +69,4 @@ module.exports = (render, construct, {
         // render node
         return renderView();
     };
-};
-
-// TODO diff node, opt algo
-let edit = (node, newNode) => {
-    if (!node) {
-        return;
-    }
-
-    node.parentNode && node.parentNode.replaceChild(newNode, node);
-    // convertNode(node, newNode);
-};
-
-// TODO events problem
-let convertNode = (node, newNode) => {
-    if (node.tagName !== newNode.tagName) {
-        node.parentNode && node.parentNode.replaceChild(newNode, node);
-    } else {
-        // attributes
-        let orinAttrs = node.attributes || [];
-        for (let i = 0; i < orinAttrs.length; i++) {
-            node.removeAttribute(orinAttrs[i].name);
-        }
-
-        let newAttrs = newNode.attributes || [];
-        for (let i = 0; i < newAttrs.length; i++) {
-            let {
-                name, value
-            } = newAttrs[i];
-            node.setAttribute(name, value);
-        }
-
-        //
-        let oriChildNodes = node.childNodes;
-        let newChildNodes = newNode.childNodes;
-
-        // remove redundant
-        let rest = [];
-        for (let i = newChildNodes.length; i < oriChildNodes.length; i++) {
-            rest.push(oriChildNodes[i]);
-        }
-
-        for (let i = 0; i < rest.length; i++) {
-            rest[i].parentNode.removeChild(rest[i]);
-        }
-
-        // diff childs
-        for (let i = 0; i < newChildNodes.length; i++) {
-            let orinChild = oriChildNodes[i];
-            let newChild = newChildNodes[i];
-            if (!orinChild) {
-                node.appendChild(newChild);
-            } else {
-                convertNode(orinChild, newChild);
-            }
-        }
-    }
 };
