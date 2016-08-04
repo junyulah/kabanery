@@ -3,49 +3,34 @@
 let EventMatrix = require('./eventMatrix');
 
 let {
-    addEvent, getNodes, removeNode, getHandlerMap
+    addHandler,
+    removeTree,
+    removeNode,
+    getNodeHandleMap
 } = EventMatrix();
 
 let bindEvents = (node, eventMap) => {
     for (let type in eventMap) {
-        addEvent(node, type, eventMap[type]);
+        addHandler(type, node, eventMap[type]);
     }
 };
 
-let clearBelow = (ancestor) => {
-    if (!ancestor) return;
-    let nodes = getNodes();
-
-    for (let i = 0; i < nodes.length; i++) {
-        let node = nodes[i];
-        if (below(node, ancestor)) {
-            // clear node
-            removeNode(node);
-        }
-    }
-};
-
-let below = (node, ancestor) => {
-    while (node) {
-        if (node === ancestor) {
-            return true;
-        }
-        node = node.parentNode;
-    }
-};
+let clearBelow = removeTree;
 
 let moveNodeEvent = (target, source) => {
-    let handlerMap = getHandlerMap(source);
-    removeNode(source);
+    let handleMap = getNodeHandleMap(source);
     removeNode(target);
 
-    for (let type in handlerMap) {
-        let handlers = handlerMap[type];
+    for (let type in handleMap) {
+        let handlers = handleMap[type];
         for (let i = 0; i < handlers.length; i++) {
             let handler = handlers[i];
-            addEvent(target, type, handler);
+            addHandler(type, target, handler);
         }
     }
+
+    //
+    removeNode(source);
 };
 
 module.exports = {
