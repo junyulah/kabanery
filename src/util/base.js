@@ -114,6 +114,14 @@ let findIndex = (list, item, eq = defEq) => {
     return -1;
 };
 
+let toArray = (v) => {
+    if(isArray(v)) {
+        return Array.prototype.slice.call(v);
+    } else {
+        return v;
+    }
+};
+
 module.exports = {
     merge,
     isPromise,
@@ -126,5 +134,6 @@ module.exports = {
     defineProperty,
     hasOwnProperty,
     contain,
-    findIndex
+    findIndex,
+    toArray
 };

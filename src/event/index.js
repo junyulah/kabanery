@@ -6,7 +6,8 @@ let {
     addHandler,
     removeTree,
     removeNode,
-    getNodeHandleMap
+    getNodeHandleMap,
+    attachDocument
 } = EventMatrix();
 
 let bindEvents = (node, eventMap) => {
@@ -36,5 +37,6 @@ let moveNodeEvent = (target, source) => {
 module.exports = {
     bindEvents,
     clearBelow,
-    moveNodeEvent
+    moveNodeEvent,
+    attachDocument
 };

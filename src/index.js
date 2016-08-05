@@ -8,10 +8,13 @@ let plugs = require('./plugin');
 
 let view = require('./view');
 
+let mount = require('./mount');
+
 module.exports = {
     n,
     svgn,
     view,
     plugs,
-    bindPlugs
+    bindPlugs,
+    mount
 };

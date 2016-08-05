@@ -5,7 +5,7 @@ let {
 } = require('../event');
 
 let {
-    hasOwnProperty
+    hasOwnProperty, toArray
 } = require('../util');
 
 let getAttributeMap = (attributes = []) => {
@@ -39,7 +39,7 @@ let applyAttibutes = (node, newNode) => {
 
     // append
     for (let name in newAttrMap) {
-        if (hasOwnProperty(orinAttrMap, name)) {
+        if (!hasOwnProperty(orinAttrMap, name)) {
             node.setAttribute(name, newAttrMap[name]);
         }
     }
@@ -78,33 +78,48 @@ let diffNode = (node, newNode) => {
 };
 
 let diffChilds = (node, newNode) => {
-    //
-    let oriChildNodes = node.childNodes;
-    let newChildNodes = newNode.childNodes;
+    // TODO using key
+    convertLists(node, newNode);
+    return node;
+};
 
-    // remove redundant
-    let rest = [];
-    for (let i = newChildNodes.length; i < oriChildNodes.length; i++) {
-        rest.push(oriChildNodes[i]);
-    }
+let convertLists = (node, newNode) => {
+    removeExtra(node, newNode);
 
-    for (let i = 0; i < rest.length; i++) {
-        removeOldNode(rest[i]);
-    }
+    let orinChildNodes = toArray(node.childNodes);
+    let newChildNodes = toArray(newNode.childNodes);
 
-    // diff childs
-    for (let i = 0; i < newChildNodes.length; i++) {
-        let orinChild = oriChildNodes[i];
+    // diff
+    for (let i = 0; i < orinChildNodes.length; i++) {
+        let orinChild = orinChildNodes[i];
         let newChild = newChildNodes[i];
-        if (!orinChild) {
-            node.appendChild(newChild);
-        } else {
-            convertNode(orinChild, newChild);
-        }
+        convertNode(orinChild, newChild);
+    }
+
+    appendMissing(node, newNode);
+};
+
+let removeExtra = (node, newNode) => {
+    let orinChildNodes = toArray(node.childNodes);
+    let newChildNodes = toArray(newNode.childNodes);
+
+    // remove
+    for (let i = newChildNodes.length; i < orinChildNodes.length; i++) {
+        removeOldNode(orinChildNodes[i]);
     }
 };
 
-// TODO events problem
+let appendMissing = (node, newNode) => {
+    let orinChildNodes = toArray(node.childNodes);
+    let newChildNodes = toArray(newNode.childNodes);
+
+    // append
+    for (let i = orinChildNodes.length; i < newChildNodes.length; i++) {
+        let newChild = newChildNodes[i];
+        node.appendChild(newChild);
+    }
+};
+
 let convertNode = (node, newNode) => {
     if (!node) {
         return newNode;

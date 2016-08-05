@@ -6,11 +6,13 @@ let {
 
 module.exports = () => {
     let matrix = {};
+    let docs = [document];
 
     let addHandler = (type, node, handler) => {
         let handlerObjs = matrix[type];
         if (!handlerObjs) {
-            document.addEventListener(type, listener(type));
+            updateDocs(type);
+            // add new type
             handlerObjs = matrix[type] = [{
                 node,
                 handlers: []
@@ -18,15 +20,31 @@ module.exports = () => {
         }
 
         let handlers = getHandlers(type, node);
-        if(!handlers) {
+        if (!handlers) {
             handlers = [];
             matrix[type].push({
                 node,
                 handlers
             });
         }
-        if(!contain(handlers, handler)) {
+        if (!contain(handlers, handler)) {
             handlers.push(handler);
+        }
+    };
+
+    let attachDocument = (doc = document) => {
+        if (!contain(docs, doc)) {
+            for (let type in matrix) {
+                doc.addEventListener(type, listener(type));
+            }
+            docs.push(doc);
+        }
+    };
+
+    let updateDocs = (type) => {
+        for (let i = 0; i < docs.length; i++) {
+            let doc = docs[i];
+            doc.addEventListener(type, listener(type));
         }
     };
 
@@ -34,7 +52,7 @@ module.exports = () => {
         let map = {};
         for (let type in matrix) {
             let handlers = getHandlers(type, item);
-            if(handlers) map[type] = handlers;
+            if (handlers) map[type] = handlers;
         }
         return map;
     };
@@ -115,7 +133,8 @@ module.exports = () => {
         removeHandler,
         removeTree,
         removeNode,
-        getNodeHandleMap
+        getNodeHandleMap,
+        attachDocument
     };
 };
 

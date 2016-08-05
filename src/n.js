@@ -25,6 +25,7 @@ let cn = (create) => {
         } = splitAttribues(attributes);
 
         let node = nodeGen(tagName, attrMap, childs);
+
         // tmp solution
         bindEvents(node, eventMap);
 
