@@ -6,7 +6,7 @@ let {
 
 let {
     hasOwnProperty, toArray
-} = require('../util');
+} = require('jsenhance');
 
 let getAttributeMap = (attributes = []) => {
     let map = {};
@@ -124,6 +124,10 @@ let convertNode = (node, newNode) => {
     if (!node) {
         return newNode;
     }
+    if(node.nodeType === 3 && newNode.nodeType === 3) {
+        node.textContent = newNode.textContent;
+    }
+    // TODO nodetype problem
     // TODO problems performance
     if (node.tagName !== newNode.tagName) {
         return replaceDirectly(node, newNode);

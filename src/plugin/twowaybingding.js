@@ -2,7 +2,7 @@
 
 let {
     get, set
-} = require('../util');
+} = require('jsenhance');
 
 module.exports = (obj, path) => (tagName, attributes, childExp) => {
     let value = get(obj, path, '');

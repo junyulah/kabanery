@@ -1,10 +1,12 @@
 'use strict';
 
 let {
-    set,
-    isObject,
-    isFunction
-} = require('./util');
+    set
+} = require('jsenhance');
+
+let {
+    isObject, isFunction
+} = require('basetype');
 
 let edit = require('./edit');
 

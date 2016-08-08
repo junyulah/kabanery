@@ -2,11 +2,11 @@
 
 let {
     findIndex, contain
-} = require('../util');
+} = require('bolzano');
 
 module.exports = () => {
     let matrix = {};
-    let docs = [document];
+    let docs = [];
 
     let addHandler = (type, node, handler) => {
         let handlerObjs = matrix[type];
@@ -42,6 +42,9 @@ module.exports = () => {
     };
 
     let updateDocs = (type) => {
+        if (!docs.length) {
+            docs.push(document);
+        }
         for (let i = 0; i < docs.length; i++) {
             let doc = docs[i];
             doc.addEventListener(type, listener(type));
@@ -99,7 +102,7 @@ module.exports = () => {
         }
     };
 
-    let listener = (type) => function (e) {
+    let listener = (type) => function(e) {
         let target = e.target;
         let nodePath = getNodePath(target);
         for (let i = 0; i < nodePath.length; i++) {
