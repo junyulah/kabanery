@@ -1,7 +1,7 @@
 'use strict';
 
 let {
-    findIndex, contain
+    findIndex, contain, map, forEach
 } = require('bolzano');
 
 module.exports = () => {
@@ -105,16 +105,26 @@ module.exports = () => {
     let listener = (type) => function(e) {
         let target = e.target;
         let nodePath = getNodePath(target);
-        for (let i = 0; i < nodePath.length; i++) {
-            let curNode = nodePath[i];
-            let handlers = getHandlers(type, curNode);
+
+        let oldProp = e.stopPropagation;
+        e.stopPropagation = function() {
+            e.__stopPropagation = true;
+            oldProp.apply(this, arguments);
+        };
+
+        let handlersList = map(nodePath, (curNode) => getHandlers(type, curNode));
+        forEach(handlersList, (handlers) => {
             if (handlers && handlers.length) {
                 for (let j = 0; j < handlers.length; j++) {
+                    if (e.__stopPropagation) {
+                        return true;
+                    }
+
                     let handler = handlers[j];
                     handler.apply(this, [e]);
                 }
             }
-        }
+        });
     };
 
     let getHandlers = (type, target) => {

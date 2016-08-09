@@ -124,6 +124,9 @@ let convertNode = (node, newNode) => {
     if (!node) {
         return newNode;
     }
+    if(!newNode) {
+        return removeOldNode(node);
+    }
     if(node.nodeType === 3 && newNode.nodeType === 3) {
         node.textContent = newNode.textContent;
     }

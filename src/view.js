@@ -36,7 +36,7 @@ module.exports = (render, construct, {
 
             afterRender && afterRender(ctx);
 
-            node.ctx = ctx;
+            if (node) node.ctx = ctx;
             return node;
         };
 
