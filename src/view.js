@@ -24,7 +24,9 @@ module.exports = (render, construct, {
         let node = null,
             data = null;
 
-        let update = (path, value) => {
+        let update = (...args) => {
+            if (!args.length) return renderView();
+            let [path, value] = args;
             set(data, path, value);
             return renderView();
         };
