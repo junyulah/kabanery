@@ -124,15 +124,16 @@ let convertNode = (node, newNode) => {
     if (!node) {
         return newNode;
     }
-    if(!newNode) {
+    if (!newNode) {
         return removeOldNode(node);
     }
-    if(node.nodeType === 3 && newNode.nodeType === 3) {
+    if (node.nodeType === 3 && newNode.nodeType === 3) {
         node.textContent = newNode.textContent;
     }
+
     // TODO nodetype problem
     // TODO problems performance
-    if (node.tagName !== newNode.tagName) {
+    if (node.tagName !== newNode.tagName || node.tagName === 'INPUT') {
         return replaceDirectly(node, newNode);
     } else {
         return diffNode(node, newNode);
