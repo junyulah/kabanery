@@ -133,7 +133,11 @@ let convertNode = (node, newNode) => {
 
     // TODO nodetype problem
     // TODO problems performance
-    if (node.tagName !== newNode.tagName || node.tagName === 'INPUT') {
+    // TODO svg render bug
+    if (node.tagName !== newNode.tagName ||
+        node.tagName === 'INPUT' ||
+        node.tagName === 'svg'
+    ) {
         return replaceDirectly(node, newNode);
     } else {
         return diffNode(node, newNode);
