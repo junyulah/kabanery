@@ -15,14 +15,15 @@ let edit = require('./edit');
  */
 
 // class level
-module.exports = (render, construct, {
+module.exports = (view, construct, {
     afterRender
 } = {}) => {
     // TODO class level API
     // instance level
     return (obj, initor) => {
         let node = null,
-            data = null;
+            data = null,
+            render = null;
 
         let update = (...args) => {
             if (!args.length) return renderView();
@@ -32,7 +33,7 @@ module.exports = (render, construct, {
         };
 
         let renderView = () => {
-            let newNode = render(data, ctx);
+            let newNode = getNewNode();
 
             node = edit(node, newNode);
 
@@ -40,6 +41,17 @@ module.exports = (render, construct, {
 
             if (node) node.ctx = ctx;
             return node;
+        };
+
+        let getNewNode = () => {
+            if (!render) render = view;
+            let ret = render(data, ctx);
+            if (isFunction(ret)) {
+                render = ret;
+                return render(data, ctx);
+            } else {
+                return ret;
+            }
         };
 
         let getNode = () => node;
