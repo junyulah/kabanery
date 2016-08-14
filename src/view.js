@@ -20,71 +20,120 @@ module.exports = (view, construct, {
 } = {}) => {
     // TODO class level API
     // instance level
-    return (obj, initor) => {
-        let node = null,
-            data = null,
-            render = null;
+    let viewer = (obj, initor) => {
+        let ctx = createCtx({
+            view, afterRender
+        });
 
-        let update = (...args) => {
-            if (!args.length) return renderView();
-            let [path, value] = args;
-            set(data, path, value);
-            return renderView();
+        return createView(ctx, obj, initor, construct);
+    };
+
+    viewer.create = (handler) => {
+        let ctx = createCtx({
+            view, afterRender
+        });
+
+        handler && handler(ctx);
+
+        return (obj, initor) => {
+            return createView(ctx, obj, initor, construct);
         };
+    };
 
-        let renderView = () => {
-            let newNode = getNewNode();
+    return viewer;
+};
 
-            node = edit(node, newNode);
+let createView = (ctx, obj, initor, construct) => {
+    let data = ctx.initData(obj, ctx);
+    // only run initor when construct view
+    initor && initor(data, ctx);
+    construct && construct(data, ctx);
 
-            afterRender && afterRender(ctx);
+    // render node
+    return ctx.renderView();
+};
 
-            if (node) node.ctx = ctx;
-            return node;
-        };
+let createCtx = ({
+    view, afterRender
+}) => {
+    let node = null,
+        data = null,
+        render = null;
 
-        let getNewNode = () => {
-            if (!render) render = view;
-            let ret = render(data, ctx);
-            if (isFunction(ret)) {
-                render = ret;
-                return render(data, ctx);
-            } else {
-                return ret;
-            }
-        };
+    let update = (...args) => {
+        if (!args.length) return renderView();
+        let [path, value] = args;
 
-        let getNode = () => node;
-
-        // TODO refator
-        let transferCtx = (newNode) => {
-            node = newNode;
-            newNode.ctx = ctx;
-        };
-
-        let ctx = {
-            update,
-            getNode,
-            transferCtx
-        };
-
-        // data generator
-        if (isFunction(obj)) {
-            data = obj(ctx);
-        } else {
-            data = obj;
+        // function is a special data
+        if(isFunction(value)) {
+            value = value(data);
         }
 
-        // TODO need mount event
-        if (!isObject(data)) {
-            throw new TypeError(`Expect object, but got ${data}. Type is ${typeof data}`);
-        }
-
-        // only run initor when construct view
-        initor && initor(data, ctx);
-        construct && construct(data, ctx);
-
-        // render node
+        set(data, path, value);
         return renderView();
     };
+
+    let renderView = () => {
+        let newNode = getNewNode();
+
+        node = edit(node, newNode);
+
+        afterRender && afterRender(ctx);
+
+        if (node) node.ctx = ctx;
+        return node;
+    };
+
+    let getNewNode = () => {
+        if (!render) render = view;
+        let ret = render(data, ctx);
+        if (isFunction(ret)) {
+            render = ret;
+            return render(data, ctx);
+        } else {
+            return ret;
+        }
+    };
+
+    let initData = (obj) => {
+        data = generateData(obj, ctx);
+        return data;
+    };
+
+    let getNode = () => node;
+
+    let getData = () => data;
+
+    // TODO refator
+    let transferCtx = (newNode) => {
+        node = newNode;
+        newNode.ctx = ctx;
+    };
+
+    let ctx = {
+        update,
+        getNode,
+        getData,
+        transferCtx,
+        initData,
+        renderView
+    };
+
+    return ctx;
+};
+
+let generateData = (obj, ctx) => {
+    let data = null;
+    // data generator
+    if (isFunction(obj)) {
+        data = obj(ctx);
+    } else {
+        data = obj;
+    }
+
+    // TODO need mount event
+    if (!isObject(data)) {
+        throw new TypeError(`Expect object, but got ${data}. Type is ${typeof data}`);
+    }
+    return data;
 };
