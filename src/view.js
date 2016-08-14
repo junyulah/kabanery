@@ -5,7 +5,7 @@ let {
 } = require('jsenhance');
 
 let {
-    isObject, isFunction
+    isObject, isFunction, likeArray
 } = require('basetype');
 
 let edit = require('./edit');
@@ -62,15 +62,23 @@ let createCtx = ({
 
     let update = (...args) => {
         if (!args.length) return renderView();
-        let [path, value] = args;
+        if (args.length === 1 && likeArray(args[0])) {
+            let arg = args[0];
+            for (let i = 0; i < arg.length; i++) {
+                set(data, arg[0], arg[1]);
+            }
+            return renderView();
+        } else {
+            let [path, value] = args;
 
-        // function is a special data
-        if(isFunction(value)) {
-            value = value(data);
+            // function is a special data
+            if (isFunction(value)) {
+                value = value(data);
+            }
+
+            set(data, path, value);
+            return renderView();
         }
-
-        set(data, path, value);
-        return renderView();
     };
 
     let renderView = () => {
