@@ -8,6 +8,10 @@ let {
     isObject, isFunction, isFalsy, isNode, likeArray, or, listType
 } = require('basetype');
 
+let {
+    forEach
+} = require('bolzano');
+
 let edit = require('./edit');
 
 let viewNodeType = (v) => {
@@ -69,9 +73,9 @@ let createCtx = ({
         if (!args.length) return renderView();
         if (args.length === 1 && likeArray(args[0])) {
             let arg = args[0];
-            for (let i = 0; i < arg.length; i++) {
-                set(data, arg[0], arg[1]);
-            }
+            forEach(arg, (item) => {
+                set(data, item[0], item[1]);
+            });
             return renderView();
         } else {
             let [path, value] = args;

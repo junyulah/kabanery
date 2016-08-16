@@ -13,7 +13,7 @@ let {
 } = require('basetype');
 
 let {
-    forEach, flat
+    forEach, flat, filter
 } = require('bolzano');
 
 let applyAttibutes = require('./applyAttributes');
@@ -34,7 +34,7 @@ let replaceDirectly = (node, newNode) => {
 let getParent = (node) => {
     if (isNode(node)) return node.parentNode;
     if (likeArray(node)) {
-        return find(node, getParent);
+        return filter(node, getParent, 1)[0];
     }
 };
 
@@ -60,13 +60,19 @@ let clearNode = (node, parent) => {
 
 // TODO using key
 let diffNode = (node, newNode) => {
+    if (isEmpty(newNode)) {
+        removeOldNode(node);
+        return null;
+    }
+
+    if (isEmpty(node)) {
+        // append new node
+        return newNode;
+    }
     if (isNode(node) && isNode(newNode)) {
         if (node.nodeType === 3 && newNode.nodeType === 3) {
             node.textContent = newNode.textContent;
-            return node;
-        }
-
-        if (node.tagName !== newNode.tagName ||
+        } else if (node.tagName !== newNode.tagName ||
             node.tagName === 'INPUT'
         ) {
             // TODO problems performance
@@ -78,9 +84,14 @@ let diffNode = (node, newNode) => {
     } else {
         let nodeList = node,
             newNodeList = newNode;
+
         if (isNode(nodeList)) nodeList = [nodeList];
         if (isNode(newNodeList)) newNodeList = [newNodeList];
+
+        //
+        node = convertLists(nodeList, newNodeList);
     }
+
     return node;
 };
 
@@ -97,68 +108,26 @@ let editNode = (node, newNode) => {
     let newChildNodes = toArray(newNode.childNodes);
 
     // TODO using key
-    convertLists(orinChildNodes, newChildNodes, node);
-
+    convertLists(orinChildNodes, newChildNodes);
 };
 
-let convertLists = (orinChildNodes, newChildNodes, parent) => {
-    removeExtra(orinChildNodes, newChildNodes);
+let convertLists = (orinChildNodes, newChildNodes) => {
+    let len = Math.max(orinChildNodes.length, newChildNodes.length);
 
-    // diff
-    forEach(orinChildNodes, (orinChild, i) => {
-        convertNode(orinChild, newChildNodes[i]);
-    });
+    let ret = [];
 
-    appendMissing(orinChildNodes, newChildNodes, parent);
-    return orinChildNodes;
-};
-
-let removeExtra = (orinChildNodes, newChildNodes) => {
-    // remove
-    for (let i = newChildNodes.length; i < orinChildNodes.length; i++) {
-        removeOldNode(orinChildNodes[i]);
-    }
-};
-
-let appendMissing = (orinChildNodes, newChildNodes, parent) => {
-    // append
-    for (let i = orinChildNodes.length; i < newChildNodes.length; i++) {
+    for (let i = 0; i < len; i++) {
+        let orinChild = orinChildNodes[i];
         let newChild = newChildNodes[i];
-        parent.appendChild(newChild);
+        let child = diffNode(orinChild, newChild);
+        if (child) ret.push(child);
     }
+    return ret;
 };
 
-let convertNode = (node, newNode) => {
-    if (!newNode) {
-        return removeOldNode(node);
-    }
+let isEmpty = (node) => !node || (likeArray(node) && !node.length);
 
-    if (node.nodeType === 3 && newNode.nodeType === 3) {
-        node.textContent = newNode.textContent;
-    }
-
-    // TODO nodetype problem
-    // TODO problems performance
-    if (node.tagName !== newNode.tagName ||
-        node.tagName === 'INPUT'
-    ) {
-        return replaceDirectly(node, newNode);
-    } else {
-        return diffNode(node, newNode);
-    }
-};
-
-let isEmpty = (node) => {
-    if (!node || (likeArray(node) && !node.length)) {
-        return true;
-    }
-    return false;
-};
-
-let emptyNull = (node) => {
-    if (isEmpty(node)) return null;
-    return node;
-};
+let emptyNull = (node) => isEmpty(node) ? null : node;
 
 module.exports = (node, newNode) => {
     let ret = null;
@@ -166,20 +135,7 @@ module.exports = (node, newNode) => {
         newNode = flat(newNode);
     }
 
-    if (isEmpty(node)) {
-        ret = newNode;
-    } else if (isEmpty(newNode)) {
-        removeOldNode(node);
-    } else if (isNode(node) && isNode(newNode)) {
-        ret = convertNode(node, newNode);
-    } else if (likeArray(node) && isNode(newNode)) {
-        //
-        let parent = getParent(node);
-    } else if (isNode(node) && likeArray(newNode)) {
-        //
-    } else if (likeArray(node) && likeArray(newNode)) {
-        //
-    }
+    ret = diffNode(node, newNode);
 
     return emptyNull(ret);
 };

@@ -70,4 +70,43 @@ describe('index', () => {
             mount(node, document.body);
         });
     });
+
+    it('view: list', (done) => {
+        jsdom.env('<p></p>', (err, window) => {
+            global.document = window.document;
+            let widget = view((data, {
+                update, getNode
+            }) => {
+                setTimeout(() => {
+                    update([
+                        ['title', 123456],
+                        ['foot', true]
+                    ]);
+                    let node = getNode();
+                    assert.equal(node[0].textContent, '123456');
+                    assert.equal(node.length, 3);
+
+                    setTimeout(() => {
+                        update('foot', false);
+                        let node = getNode();
+                        assert.equal(node.length, 2);
+                        done();
+                    }, 0);
+                }, 0);
+                return () => {
+                    return [
+                        n('h3', data.title),
+                        n('p'),
+                        data.foot ? n('span') : null
+                    ];
+                };
+            });
+
+            let node = widget({
+                title: '1234'
+            });
+
+            mount(node, document.body);
+        });
+    });
 });
