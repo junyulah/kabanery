@@ -9,17 +9,17 @@ let {
 } = require('jsenhance');
 
 let {
-    isNode, likeArray
+    isNode
 } = require('basetype');
 
 let {
-    forEach, flat, filter
+    forEach
 } = require('bolzano');
 
 let applyAttibutes = require('./applyAttributes');
 
 let replaceDirectly = (node, newNode) => {
-    let parent = getParent(node);
+    let parent = node.parentNode;
     if (parent) {
         // clear node's events
         clearBelow(node);
@@ -31,47 +31,31 @@ let replaceDirectly = (node, newNode) => {
     }
 };
 
-let getParent = (node) => {
-    if (isNode(node)) return node.parentNode;
-    if (likeArray(node)) {
-        return filter(node, getParent, 1)[0];
-    }
-};
-
 let removeOldNode = (oldNode) => {
-    let parent = getParent(oldNode);
+    let parent = oldNode.parentNode;
     if (parent) {
-        clearNode(oldNode, parent);
-    }
-};
-
-let clearNode = (node, parent) => {
-    if (isNode(node)) {
-        clearBelow(node);
-        return parent.removeChild(node);
-    }
-
-    if (likeArray(node)) {
-        return forEach(node, (item) => {
-            clearNode(item, parent);
-        });
+        clearBelow(oldNode);
+        parent.removeChild(oldNode);
     }
 };
 
 // TODO using key
 let diffNode = (node, newNode) => {
-    if (isEmpty(newNode)) {
-        return null;
+    if (!newNode) {
+        return removeOldNode(node);
     }
 
-    if (isEmpty(node)) {
-        // append new node
-        return newNode;
+    if (node.nodeType === 3 && newNode.nodeType === 3) {
+        node.textContent = newNode.textContent;
     }
+
     if (isNode(node) && isNode(newNode)) {
         if (node.nodeType === 3 && newNode.nodeType === 3) {
             node.textContent = newNode.textContent;
-        } else if (node.tagName !== newNode.tagName ||
+            return node;
+        }
+
+        if (node.tagName !== newNode.tagName ||
             node.tagName === 'INPUT'
         ) {
             // TODO problems performance
@@ -80,17 +64,7 @@ let diffNode = (node, newNode) => {
         } else {
             editNode(node, newNode);
         }
-    } else {
-        let nodeList = node,
-            newNodeList = newNode;
-
-        if (isNode(nodeList)) nodeList = [nodeList];
-        if (isNode(newNodeList)) newNodeList = [newNodeList];
-
-        //
-        node = convertLists(nodeList, newNodeList);
     }
-
     return node;
 };
 
@@ -107,39 +81,47 @@ let editNode = (node, newNode) => {
     let newChildNodes = toArray(newNode.childNodes);
 
     // TODO using key
-    convertLists(orinChildNodes, newChildNodes);
+    convertLists(orinChildNodes, newChildNodes, node);
 };
 
-let convertLists = (orinChildNodes, newChildNodes) => {
-    let len = Math.max(orinChildNodes.length, newChildNodes.length);
+let convertLists = (orinChildNodes, newChildNodes, parent) => {
+    removeExtra(orinChildNodes, newChildNodes);
 
-    let ret = [];
+    // diff
+    forEach(orinChildNodes, (orinChild, i) => {
+        diffNode(orinChild, newChildNodes[i]);
+    });
 
-    for (let i = 0; i < len; i++) {
-        let orinChild = orinChildNodes[i];
-        let newChild = newChildNodes[i];
-        if (isEmpty(newChild)) {
-            removeOldNode(orinChild);
-        } else {
-            let child = diffNode(orinChild, newChild);
+    appendMissing(orinChildNodes, newChildNodes, parent);
+    return orinChildNodes;
+};
 
-            if (child) ret.push(child);
-        }
+let removeExtra = (orinChildNodes, newChildNodes) => {
+    // remove
+    for (let i = newChildNodes.length; i < orinChildNodes.length; i++) {
+        removeOldNode(orinChildNodes[i]);
     }
-    return ret;
 };
 
-let isEmpty = (node) => !node || (likeArray(node) && !node.length);
-
-let emptyNull = (node) => isEmpty(node) ? null : node;
+let appendMissing = (orinChildNodes, newChildNodes, parent) => {
+    // append
+    for (let i = orinChildNodes.length; i < newChildNodes.length; i++) {
+        let newChild = newChildNodes[i];
+        parent.appendChild(newChild);
+    }
+};
 
 module.exports = (node, newNode) => {
     let ret = null;
-    if (likeArray(newNode)) {
-        newNode = flat(newNode);
+
+    if (!node) {
+        ret = newNode;
+    } else if (!newNode) {
+        removeOldNode(node);
+        ret = null;
+    } else {
+        ret = diffNode(node, newNode);
     }
 
-    ret = diffNode(node, newNode);
-
-    return emptyNull(ret);
+    return ret;
 };
