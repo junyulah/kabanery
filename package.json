@@ -27,7 +27,8 @@
         "ncn": "~0.0.1",
         "jsenhance": "~0.0.1",
         "bolzano": "~0.0.1",
-        "basetype": "~0.0.1"
+        "basetype": "~0.0.1",
+        "doming": "~0.0.1"
     },
     "devDependencies": {
         "jsdom": "^9.4.1",

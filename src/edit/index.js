@@ -5,66 +5,86 @@ let {
 } = require('../event');
 
 let {
-    hasOwnProperty, toArray
+    toArray
 } = require('jsenhance');
 
-let getAttributeMap = (attributes = []) => {
-    let map = {};
-    for (let i = 0; i < attributes.length; i++) {
-        let {
-            name, value
-        } = attributes[i];
-        map[name] = value;
-    }
-    return map;
-};
+let {
+    isNode, likeArray
+} = require('basetype');
 
-let applyAttibutes = (node, newNode) => {
-    // attributes
-    let orinAttrMap = getAttributeMap(node.attributes);
-    let newAttrMap = getAttributeMap(newNode.attributes);
+let {
+    forEach, flat
+} = require('bolzano');
 
-    // update and remove
-    for (let name in orinAttrMap) {
-        if (hasOwnProperty(newAttrMap, name)) {
-            let orinValue = orinAttrMap[name];
-            let newValue = newAttrMap[name];
-            if (newValue !== orinValue) {
-                node.setAttribute(name, newValue);
-            }
-        } else {
-            node.removeAttribute(name);
-        }
-    }
-
-    // append
-    for (let name in newAttrMap) {
-        if (!hasOwnProperty(orinAttrMap, name)) {
-            node.setAttribute(name, newAttrMap[name]);
-        }
-    }
-};
+let applyAttibutes = require('./applyAttributes');
 
 let replaceDirectly = (node, newNode) => {
-    if (node.parentNode) {
+    let parent = getParent(node);
+    if (parent) {
         // clear node's events
         clearBelow(node);
         // replace
-        node.parentNode.replaceChild(newNode, node);
+        parent.replaceChild(newNode, node);
         return newNode;
     } else {
         return node;
     }
 };
 
+let getParent = (node) => {
+    if (isNode(node)) return node.parentNode;
+    if (likeArray(node)) {
+        return find(node, getParent);
+    }
+};
+
 let removeOldNode = (oldNode) => {
-    clearBelow(oldNode);
-    let parent = oldNode.parentNode;
-    parent && parent.removeChild(oldNode);
+    let parent = getParent(oldNode);
+    if (parent) {
+        clearNode(oldNode, parent);
+    }
+};
+
+let clearNode = (node, parent) => {
+    if (isNode(node)) {
+        clearBelow(node);
+        return parent.removeChild(node);
+    }
+
+    if (likeArray(node)) {
+        return forEach(node, (item) => {
+            clearNode(item, parent);
+        });
+    }
 };
 
 // TODO using key
 let diffNode = (node, newNode) => {
+    if (isNode(node) && isNode(newNode)) {
+        if (node.nodeType === 3 && newNode.nodeType === 3) {
+            node.textContent = newNode.textContent;
+            return node;
+        }
+
+        if (node.tagName !== newNode.tagName ||
+            node.tagName === 'INPUT'
+        ) {
+            // TODO problems performance
+            // TODO nodetype problem
+            return replaceDirectly(node, newNode);
+        } else {
+            editNode(node, newNode);
+        }
+    } else {
+        let nodeList = node,
+            newNodeList = newNode;
+        if (isNode(nodeList)) nodeList = [nodeList];
+        if (isNode(newNodeList)) newNodeList = [newNodeList];
+    }
+    return node;
+};
+
+let editNode = (node, newNode) => {
     // attributes
     applyAttibutes(node, newNode);
     // events
@@ -73,31 +93,24 @@ let diffNode = (node, newNode) => {
     if (newNode.ctx) {
         newNode.ctx.transferCtx(node);
     }
-    diffChilds(node, newNode);
-
-    return node;
-};
-
-let diffChilds = (node, newNode) => {
-    // TODO using key
-    convertLists(node, newNode);
-    return node;
-};
-
-let convertLists = (node, newNode) => {
     let orinChildNodes = toArray(node.childNodes);
     let newChildNodes = toArray(newNode.childNodes);
 
+    // TODO using key
+    convertLists(orinChildNodes, newChildNodes, node);
+
+};
+
+let convertLists = (orinChildNodes, newChildNodes, parent) => {
     removeExtra(orinChildNodes, newChildNodes);
 
     // diff
-    for (let i = 0; i < orinChildNodes.length; i++) {
-        let orinChild = orinChildNodes[i];
-        let newChild = newChildNodes[i];
-        convertNode(orinChild, newChild);
-    }
+    forEach(orinChildNodes, (orinChild, i) => {
+        convertNode(orinChild, newChildNodes[i]);
+    });
 
-    appendMissing(node, newNode);
+    appendMissing(orinChildNodes, newChildNodes, parent);
+    return orinChildNodes;
 };
 
 let removeExtra = (orinChildNodes, newChildNodes) => {
@@ -107,34 +120,27 @@ let removeExtra = (orinChildNodes, newChildNodes) => {
     }
 };
 
-let appendMissing = (node, newNode) => {
-    let orinChildNodes = toArray(node.childNodes);
-    let newChildNodes = toArray(newNode.childNodes);
-
+let appendMissing = (orinChildNodes, newChildNodes, parent) => {
     // append
     for (let i = orinChildNodes.length; i < newChildNodes.length; i++) {
         let newChild = newChildNodes[i];
-        node.appendChild(newChild);
+        parent.appendChild(newChild);
     }
 };
 
 let convertNode = (node, newNode) => {
-    if (!node) {
-        return newNode;
-    }
     if (!newNode) {
         return removeOldNode(node);
     }
+
     if (node.nodeType === 3 && newNode.nodeType === 3) {
         node.textContent = newNode.textContent;
     }
 
     // TODO nodetype problem
     // TODO problems performance
-    // TODO svg render bug
     if (node.tagName !== newNode.tagName ||
-        node.tagName === 'INPUT' ||
-        node.tagName === 'svg'
+        node.tagName === 'INPUT'
     ) {
         return replaceDirectly(node, newNode);
     } else {
@@ -142,6 +148,38 @@ let convertNode = (node, newNode) => {
     }
 };
 
+let isEmpty = (node) => {
+    if (!node || (likeArray(node) && !node.length)) {
+        return true;
+    }
+    return false;
+};
+
+let emptyNull = (node) => {
+    if (isEmpty(node)) return null;
+    return node;
+};
+
 module.exports = (node, newNode) => {
-    return convertNode(node, newNode);
+    let ret = null;
+    if (likeArray(newNode)) {
+        newNode = flat(newNode);
+    }
+
+    if (isEmpty(node)) {
+        ret = newNode;
+    } else if (isEmpty(newNode)) {
+        removeOldNode(node);
+    } else if (isNode(node) && isNode(newNode)) {
+        ret = convertNode(node, newNode);
+    } else if (likeArray(node) && isNode(newNode)) {
+        //
+        let parent = getParent(node);
+    } else if (isNode(node) && likeArray(newNode)) {
+        //
+    } else if (likeArray(node) && likeArray(newNode)) {
+        //
+    }
+
+    return emptyNull(ret);
 };

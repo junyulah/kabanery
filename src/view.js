@@ -5,10 +5,15 @@ let {
 } = require('jsenhance');
 
 let {
-    isObject, isFunction, likeArray
+    isObject, isFunction, isFalsy, isNode, likeArray, or, listType
 } = require('basetype');
 
 let edit = require('./edit');
+
+let viewNodeType = (v) => {
+    let type = or(isFalsy, isNode, listType(viewNodeType));
+    return type(v);
+};
 
 /**
  * render function: (data) => node
@@ -83,6 +88,9 @@ let createCtx = ({
 
     let renderView = () => {
         let newNode = getNewNode();
+        viewNodeType(newNode);
+
+        // type check for newNode
 
         node = edit(node, newNode);
 
