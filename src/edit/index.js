@@ -59,7 +59,8 @@ let replaceDirectly = (node, newNode) => {
 
 let removeOldNode = (oldNode) => {
     clearBelow(oldNode);
-    oldNode.parentNode.removeChild(oldNode);
+    let parent = oldNode.parentNode;
+    parent && parent.removeChild(oldNode);
 };
 
 // TODO using key
