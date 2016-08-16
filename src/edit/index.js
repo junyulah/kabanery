@@ -84,10 +84,10 @@ let diffChilds = (node, newNode) => {
 };
 
 let convertLists = (node, newNode) => {
-    removeExtra(node, newNode);
-
     let orinChildNodes = toArray(node.childNodes);
     let newChildNodes = toArray(newNode.childNodes);
+
+    removeExtra(orinChildNodes, newChildNodes);
 
     // diff
     for (let i = 0; i < orinChildNodes.length; i++) {
@@ -99,10 +99,7 @@ let convertLists = (node, newNode) => {
     appendMissing(node, newNode);
 };
 
-let removeExtra = (node, newNode) => {
-    let orinChildNodes = toArray(node.childNodes);
-    let newChildNodes = toArray(newNode.childNodes);
-
+let removeExtra = (orinChildNodes, newChildNodes) => {
     // remove
     for (let i = newChildNodes.length; i < orinChildNodes.length; i++) {
         removeOldNode(orinChildNodes[i]);
@@ -144,4 +141,6 @@ let convertNode = (node, newNode) => {
     }
 };
 
-module.exports = convertNode;
+module.exports = (node, newNode) => {
+    return convertNode(node, newNode);
+};
