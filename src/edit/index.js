@@ -61,7 +61,6 @@ let clearNode = (node, parent) => {
 // TODO using key
 let diffNode = (node, newNode) => {
     if (isEmpty(newNode)) {
-        removeOldNode(node);
         return null;
     }
 
@@ -119,8 +118,13 @@ let convertLists = (orinChildNodes, newChildNodes) => {
     for (let i = 0; i < len; i++) {
         let orinChild = orinChildNodes[i];
         let newChild = newChildNodes[i];
-        let child = diffNode(orinChild, newChild);
-        if (child) ret.push(child);
+        if (isEmpty(newChild)) {
+            removeOldNode(orinChild);
+        } else {
+            let child = diffNode(orinChild, newChild);
+
+            if (child) ret.push(child);
+        }
     }
     return ret;
 };
