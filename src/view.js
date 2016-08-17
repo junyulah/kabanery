@@ -39,9 +39,13 @@ module.exports = (view, construct, {
 
         handler && handler(ctx);
 
-        return (obj, initor) => {
+        let inst = (obj, initor) => {
             return createView(ctx, obj, initor, construct);
         };
+
+        inst.ctx = ctx;
+
+        return inst;
     };
 
     return viewer;
