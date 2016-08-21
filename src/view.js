@@ -12,11 +12,13 @@ let {
     forEach
 } = require('bolzano');
 
-let edit = require('./edit');
+let replace = require('./replace');
 
 /**
  * render function: (data) => node
  */
+
+// TODO observable for update, append
 
 // class level
 module.exports = (view, construct, {
@@ -58,7 +60,7 @@ let createView = (ctx, obj, initor, construct) => {
     construct && construct(data, ctx);
 
     // render node
-    return ctx.renderView();
+    return ctx.replaceView();
 };
 
 let createCtx = ({
@@ -69,13 +71,13 @@ let createCtx = ({
         render = null;
 
     let update = (...args) => {
-        if (!args.length) return renderView();
+        if (!args.length) return replaceView();
         if (args.length === 1 && likeArray(args[0])) {
             let arg = args[0];
             forEach(arg, (item) => {
                 set(data, item[0], item[1]);
             });
-            return renderView();
+            return replaceView();
         } else {
             let [path, value] = args;
 
@@ -85,16 +87,22 @@ let createCtx = ({
             }
 
             set(data, path, value);
-            return renderView();
+            return replaceView();
         }
     };
 
-    let renderView = () => {
+    let append = (item, viewFun) => {
+        if (node) {
+            node.appendChild(viewFun(item));
+        }
+    };
+
+    let replaceView = () => {
         let newNode = getNewNode();
 
         // type check for newNode
 
-        node = edit(node, newNode);
+        node = replace(node, newNode);
 
         afterRender && afterRender(ctx);
 
@@ -122,6 +130,8 @@ let createCtx = ({
 
     let getData = () => data;
 
+    let getCtx = () => ctx;
+
     // TODO refator
     let transferCtx = (newNode) => {
         node = newNode;
@@ -134,7 +144,9 @@ let createCtx = ({
         getData,
         transferCtx,
         initData,
-        renderView
+        replaceView,
+        append,
+        getCtx
     };
 
     return ctx;
