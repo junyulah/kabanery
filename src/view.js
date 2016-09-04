@@ -21,12 +21,13 @@ let replace = require('./replace');
 // TODO observable for update, append
 
 // class level
-module.exports = (view, construct, {
+let View = (view, construct, {
     afterRender
 } = {}) => {
     // TODO class level API
     // instance level
     let viewer = (obj, initor) => {
+        // create context
         let ctx = createCtx({
             view, afterRender
         });
@@ -34,23 +35,50 @@ module.exports = (view, construct, {
         return createView(ctx, obj, initor, construct);
     };
 
-    viewer.create = (handler) => {
-        let ctx = createCtx({
-            view, afterRender
-        });
+    let viewerOps = (viewer) => {
+        viewer.create = (handler) => {
+            let ctx = createCtx({
+                view, afterRender
+            });
 
-        handler && handler(ctx);
+            handler && handler(ctx);
 
-        let inst = (obj, initor) => {
-            return createView(ctx, obj, initor, construct);
+            let inst = (obj, initor) => {
+                return createView(ctx, obj, initor, construct);
+            };
+
+            inst.ctx = ctx;
+
+            return inst;
         };
 
-        inst.ctx = ctx;
+        // extend some context
+        viewer.expand = (ctxMap = {}) => {
+            let newViewer = (...args) => {
+                let obj = args[0];
+                args[0] = View.ext(obj, ctxMap);
 
-        return inst;
+                return viewer(...args);
+            };
+
+            viewerOps(newViewer);
+            return newViewer;
+        };
     };
 
+    viewerOps(viewer);
+
     return viewer;
+};
+
+View.ext = (data, ctxMap = {}) => (ctx) => {
+    for (let name in ctxMap) {
+        ctx[name] = ctxMap[name];
+    }
+    if (isFunction(data)) {
+        return data(ctx);
+    }
+    return data;
 };
 
 let createView = (ctx, obj, initor, construct) => {
@@ -167,3 +195,5 @@ let generateData = (obj, ctx) => {
     }
     return data;
 };
+
+module.exports = View;
