@@ -1,37 +1,36 @@
 {
-    "name": "kabanery",
-    "version": "0.0.1",
-    "description": "front end render framework",
-    "main": "index.js",
-    "scripts": {
-        "test": "mocha test/**/*.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/LoveKino/kabanery.git"
-    },
-    "keywords": [
-        "render",
-        "view",
-        "front",
-        "dom"
-    ],
-    "author": "ddchen",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/LoveKino/kabanery/issues"
-    },
-    "homepage": "https://github.com/LoveKino/kabanery#readme",
-    "dependencies": {},
-    "link_dependencies": {
-        "ncn": "~0.0.1",
-        "jsenhance": "~0.0.1",
-        "bolzano": "~0.0.1",
-        "basetype": "~0.0.1",
-        "doming": "~0.0.1"
-    },
-    "devDependencies": {
-        "jsdom": "^9.4.1",
-        "mocha": "^3.0.2"
-    }
+  "name": "kabanery",
+  "version": "0.0.1",
+  "description": "front end render framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LoveKino/kabanery.git"
+  },
+  "keywords": [
+    "render",
+    "view",
+    "front",
+    "dom"
+  ],
+  "author": "ddchen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LoveKino/kabanery/issues"
+  },
+  "homepage": "https://github.com/LoveKino/kabanery#readme",
+  "dependencies": {
+    "basetype": "^0.1.0",
+    "bolzano": "0.0.1",
+    "doming": "0.0.1",
+    "jsenhance": "0.0.1",
+    "ncn": "0.0.1"
+  },
+  "devDependencies": {
+    "jsdom": "^9.4.1",
+    "mocha": "^3.0.2"
+  }
 }
