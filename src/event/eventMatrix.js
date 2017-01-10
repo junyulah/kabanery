@@ -27,8 +27,9 @@ module.exports = () => {
                 handlers
             });
         }
+        // append handler to list
         if (!contain(handlers, handler)) {
-            handlers.push(handler);
+            handlers.push((...args) => handler.apply(node, args));
         }
     };
 
