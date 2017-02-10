@@ -10,8 +10,11 @@ let view = require('./view');
 
 let mount = require('./mount');
 
+let N = require('./compose/N');
+
 module.exports = {
     n,
+    N,
     svgn,
     view,
     plugs,

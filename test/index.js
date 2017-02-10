@@ -5,7 +5,7 @@ let jsdom = require('jsdom');
 let assert = require('assert');
 
 let {
-    n, view, mount
+    n, view, mount, N
 } = require('../index');
 
 describe('index', () => {
@@ -68,6 +68,24 @@ describe('index', () => {
             });
 
             mount(node, document.body);
+        });
+    });
+
+    it('N', (done) => {
+        jsdom.env('', (err, window) => {
+            global.document = window.document;
+
+            let ui = view(() => {
+                return n('div');
+            });
+
+            let ui2 = N('p', ui);
+
+            mount(ui2({}), document.body);
+
+            assert.equal(document.body.innerHTML, '<p><div></div></p>');
+
+            done();
         });
     });
 });
