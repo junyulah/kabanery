@@ -149,7 +149,7 @@ let createCtx = ({
         }
     };
 
-    let initData = (obj) => {
+    let initData = (obj = {}) => {
         data = generateData(obj, ctx);
         return data;
     };
