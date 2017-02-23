@@ -1,6 +1,6 @@
 {
   "name": "kabanery",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "front end render framework",
   "main": "index.js",
   "scripts": {

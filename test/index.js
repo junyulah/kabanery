@@ -88,4 +88,22 @@ describe('index', () => {
             done();
         });
     });
+
+    it('N2', (done) => {
+        jsdom.env('', (err, window) => {
+            global.document = window.document;
+
+            let ui = view(() => {
+                return n('div');
+            });
+
+            let ui2 = N('p', [ui, n('span'), [n('h1'), n('h2')]]);
+
+            mount(ui2({}), document.body);
+
+            assert.equal(document.body.innerHTML, '<p><div></div><span></span><h1></h1><h2></h2></p>');
+
+            done();
+        });
+    });
 });

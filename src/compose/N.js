@@ -32,6 +32,18 @@ module.exports = (...args) => {
     }
 
     return (...params) => {
-        return n(tagName, attrs, map(childs, (viewer) => viewer(...params)));
+        let renderList = (list) => {
+            return map(list, (viewer) => {
+                if (isArray(viewer)) {
+                    return renderList(viewer);
+                } else if (isFunction(viewer)) {
+                    return viewer(...params);
+                } else {
+                    return viewer;
+                }
+            });
+        };
+
+        return n(tagName, attrs, renderList(childs));
     };
 };
