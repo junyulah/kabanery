@@ -4,6 +4,10 @@ let {
     n, svgn, bindPlugs
 } = require('./n');
 
+let {
+    parseArgs
+} = require('ncn');
+
 let plugs = require('./plugin');
 
 let view = require('./view');
@@ -19,5 +23,7 @@ module.exports = {
     view,
     plugs,
     bindPlugs,
-    mount
+    mount,
+
+    parseArgs
 };
