@@ -12,13 +12,19 @@ let {
     flat, forEach
 } = require('bolzano');
 
-module.exports = (rootNode, parentNode) => {
-    rootNode = flat(rootNode);
-    forEach(rootNode, (item) => {
+/**
+ * @param parentNode
+ *      the dom node used hook node we rendered
+ */
+module.exports = (kabaneryRoots, parentNode) => {
+    kabaneryRoots = flat(kabaneryRoots);
+    forEach(kabaneryRoots, (item) => {
         if (isNode(item)) {
             parentNode.appendChild(item);
         }
     });
+
+    // attach to document
     attachDocument(getDoc(parentNode));
 };
 

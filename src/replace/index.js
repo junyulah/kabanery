@@ -1,10 +1,6 @@
 'use strict';
 
 let {
-    moveNodeEvent, clearBelow
-} = require('../event');
-
-let {
     toArray
 } = require('jsenhance');
 
@@ -21,8 +17,6 @@ let applyAttibutes = require('./applyAttributes');
 let replaceDirectly = (node, newNode) => {
     let parent = node.parentNode;
     if (parent) {
-        // clear node's events
-        clearBelow(node);
         // replace
         parent.replaceChild(newNode, node);
         return newNode;
@@ -34,7 +28,6 @@ let replaceDirectly = (node, newNode) => {
 let removeOldNode = (oldNode) => {
     let parent = oldNode.parentNode;
     if (parent) {
-        clearBelow(oldNode);
         parent.removeChild(oldNode);
     }
 };
@@ -71,8 +64,6 @@ let diffNode = (node, newNode) => {
 let editNode = (node, newNode) => {
     // attributes
     applyAttibutes(node, newNode);
-    // events
-    moveNodeEvent(node, newNode);
     // transfer context
     if (newNode.ctx) {
         newNode.ctx.transferCtx(node);

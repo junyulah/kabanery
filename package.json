@@ -4,7 +4,7 @@
   "description": "front end render framework",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/**/*.js"
+    "test": "mocha \"test/function/**/*.js\""
   },
   "repository": {
     "type": "git",
@@ -27,9 +27,13 @@
     "bolzano": "0.0.1",
     "doming": "0.0.1",
     "jsenhance": "0.0.1",
+    "mocha": "^3.2.0",
     "ncn": "0.0.1"
   },
   "devDependencies": {
+    "browser-js-env": "0.0.4",
+    "es6-promisify": "^5.0.0",
+    "istanbul": "^0.4.5",
     "jsdom": "^9.4.1",
     "mocha": "^3.0.2"
   }

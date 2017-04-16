@@ -24,6 +24,7 @@ let cn = (create) => {
             attrMap, eventMap
         } = splitAttribues(attributes);
 
+        // TODO delay node gen operations
         let node = nodeGen(tagName, attrMap, childs);
 
         // tmp solution

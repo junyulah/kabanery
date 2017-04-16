@@ -6,7 +6,7 @@ let assert = require('assert');
 
 let {
     n, view, mount, N
-} = require('../index');
+} = require('../../index');
 
 describe('index', () => {
     it('base', (done) => {

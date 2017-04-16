@@ -1,40 +1,26 @@
 'use strict';
 
 let {
-    findIndex, contain, map, forEach
+    contain
 } = require('bolzano');
 
 module.exports = () => {
-    let matrix = {};
     let docs = [];
+    let eventTypeMap = {};
 
-    let addHandler = (type, node, handler) => {
-        let handlerObjs = matrix[type];
-        if (!handlerObjs) {
+    let listenEventType = (type) => {
+        if (!eventTypeMap[type]) {
             updateDocs(type);
-            // add new type
-            handlerObjs = matrix[type] = [{
-                node,
-                handlers: []
-            }];
         }
-
-        let handlers = getHandlers(type, node);
-        if (!handlers) {
-            handlers = [];
-            matrix[type].push({
-                node,
-                handlers
-            });
-        }
-        if (!contain(handlers, handler)) {
-            handlers.push(handler);
-        }
+        eventTypeMap[type] = true;
     };
 
+    /**
+     * attach document used to accept events
+     */
     let attachDocument = (doc = document) => {
         if (!contain(docs, doc)) {
-            for (let type in matrix) {
+            for (let type in eventTypeMap) {
                 doc.addEventListener(type, listener(type));
             }
             docs.push(doc);
@@ -51,106 +37,48 @@ module.exports = () => {
         }
     };
 
-    let getNodeHandleMap = (item) => {
-        let map = {};
-        for (let type in matrix) {
-            let handlers = getHandlers(type, item);
-            if (handlers) map[type] = handlers;
-        }
-        return map;
-    };
-
-    let removeHandler = (type, node, handler) => {
-        let handlers = getHandlers(type, node);
-        if (handlers && handler.length) {
-            let index = findIndex(handlers, handler);
-            if (index !== -1) {
-                handlers.splice(index, 1);
-            }
-        }
-    };
-
-    let removeTree = (item) => {
-        for (let type in matrix) {
-            let handlerObjs = matrix[type];
-            for (let i = 0; i < handlerObjs.length; i++) {
-                let {
-                    node
-                } = handlerObjs[i];
-                if (below(node, item)) {
-                    // remove i
-                    handlerObjs.splice(i, 1);
-                    i = i - 1;
-                }
-            }
-        }
-    };
-
-    let removeNode = (item) => {
-        for (let type in matrix) {
-            let handlerObjs = matrix[type];
-            for (let i = 0; i < handlerObjs.length; i++) {
-                let {
-                    node
-                } = handlerObjs[i];
-                if (node === item) {
-                    // remove node
-                    handlerObjs.splice(i, 1);
-                    break;
-                }
-            }
-        }
-    };
-
     let listener = (type) => function(e) {
+        let ctx = this;
         let target = e.target;
-        let nodePath = getNodePath(target);
 
+        // hack the stopPropagration function
         let oldProp = e.stopPropagation;
-        e.stopPropagation = function() {
+        e.stopPropagation = function(...args) {
             e.__stopPropagation = true;
-            oldProp.apply(this, arguments);
+            return oldProp.apply(ctx, args);
         };
 
-        let handlersList = map(nodePath, (curNode) => getHandlers(type, curNode));
-        forEach(handlersList, (handlers) => {
-            if (handlers && handlers.length) {
-                for (let j = 0; j < handlers.length; j++) {
-                    if (e.__stopPropagation) {
-                        return true;
-                    }
+        let nodePath = getNodePath(target);
 
-                    let handler = handlers[j];
-                    handler.apply(this, [e]);
-                }
-            }
-        });
+        for (let i = 0; i < nodePath.length; i++) {
+            let node = nodePath[i];
+            applyNodeHandlers(e, type, node, ctx);
+        }
     };
 
-    let getHandlers = (type, target) => {
-        let handlerObjs = matrix[type];
-        for (let i = 0; i < handlerObjs.length; i++) {
-            let {
-                node, handlers
-            } = handlerObjs[i];
-            if (node === target) {
-                return handlers;
-            }
+    let applyNodeHandlers = (e, type, node, ctx) => {
+        if (e.__stopPropagation) { // event already been stoped by child node
+            return true;
         }
 
-        return null;
+        let handler = getHandler(type, node);
+        return handler && handler.apply(ctx, [e]);
+    };
+
+    let getHandler = (type, target) => {
+        let eventMap = target && target.__eventMap;
+        return eventMap && eventMap[type];
     };
 
     return {
-        addHandler,
-        removeHandler,
-        removeTree,
-        removeNode,
-        getNodeHandleMap,
+        listenEventType,
         attachDocument
     };
 };
 
+/**
+ * get the path of node
+ */
 let getNodePath = (target) => {
     let paths = [];
     while (target) {
@@ -158,13 +86,4 @@ let getNodePath = (target) => {
         target = target.parentNode;
     }
     return paths;
-};
-
-let below = (node, ancestor) => {
-    while (node) {
-        if (node === ancestor) {
-            return true;
-        }
-        node = node.parentNode;
-    }
 };
