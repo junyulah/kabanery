@@ -2,7 +2,7 @@
 
 [中文文档](./README_zh.md)   [document](./README.md)
 
-front end render framework
+A Front End Render Framework
 - [install](#install)
 - [usage](#usage)
   * [API quick run](#api-quick-run)
@@ -59,7 +59,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 output
 
-    <div id="a" style=";font-size: 10px"><div>third</div></div>
+    <div id="a" style=";font-size: 10px"><div>show text</div></div>
 
 ```
 
@@ -93,7 +93,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 output
 
-    <div id="a" style=";font-size: 10px"><div>third</div></div>
+    <div id="a" style=";font-size: 10px"><div>show text</div></div>
 
 ```
 

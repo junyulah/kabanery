@@ -1,7 +1,7 @@
 {
   "name": "kabanery",
-  "version": "0.1.7",
-  "description": "front end render framework",
+  "version": "0.1.8",
+  "description": "A Front End Render Framework\n[readme-lang:zh]一种前端渲染框架",
   "main": "index.js",
   "scripts": {
     "test": "mocha \"test/function/**/*.js\"",
@@ -28,7 +28,6 @@
     "bolzano": "0.0.1",
     "doming": "0.0.1",
     "jsenhance": "0.0.1",
-    "mocha": "^3.2.0",
     "ncn": "0.0.1"
   },
   "devDependencies": {

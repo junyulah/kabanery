@@ -2,7 +2,7 @@
 
 [中文文档](./README_zh.md)   [document](./README.md)
 
-
+一种前端渲染框架
 - [安装](#%E5%AE%89%E8%A3%85)
 - [使用方法](#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
   * [API 快速运行](#api-%E5%BF%AB%E9%80%9F%E8%BF%90%E8%A1%8C)
@@ -58,7 +58,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 输出
 
-    <div id="a" style=";font-size: 10px"><div>third</div></div>
+    <div id="a" style=";font-size: 10px"><div>show text</div></div>
 
 ```
 
@@ -91,7 +91,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 输出
 
-    <div id="a" style=";font-size: 10px"><div>third</div></div>
+    <div id="a" style=";font-size: 10px"><div>show text</div></div>
 
 ```
 
