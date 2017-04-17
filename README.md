@@ -30,7 +30,8 @@ Install on global, using `npm i kabanery -g`
 
 ### API quick run
 
-Construct a view.
+Basic way to construct a view.
+
 
 ```js
 let kabanery = require('kabanery')
@@ -58,11 +59,12 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 output
 
-    <div id="a" style=";font-size: 10px"><div>show text</div></div>
+    <div id="a" style=";font-size: 10px"><div>third</div></div>
 
 ```
 
 Using update api to update a view.
+
 
 ```js
 let kabanery = require('kabanery')
@@ -91,7 +93,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 output
 
-    <div id="a" style=";font-size: 10px"><div>show text</div></div>
+    <div id="a" style=";font-size: 10px"><div>third</div></div>
 
 ```
 
@@ -119,19 +121,28 @@ output
 │   │   │──eventError.js    
 │   │   │──index.js    
 │   │   └──twowaybingding.js    
-│   │──replace    
-│   │   │──applyAttributes.js    
-│   │   └──index.js    
 │   └──view.js    
 └──test    
     │──browser    
     │   │──__test    
-    │   │   └──base.js    
+    │   │   │──base.js    
+    │   │   │   │──asset    
+    │   │   │   │   └──app.js    
+    │   │   │   │──index.html    
+    │   │   │   │──index.js    
+    │   │   │   │──test.js    
+    │   │   │   └──webpack.config.js    
+    │   │   └──bubble.js    
     │   │       │──index.html    
     │   │       │──index.js    
     │   │       │──test.js    
     │   │       └──webpack.config.js    
     │   └──case    
+    │       └──event    
+    │           │──base.js    
+    │           │──bubble.js    
+    │           │──stopPropagation.js    
+    │           └──updatePassingView.js    
     └──function    
         │──browser.js    
         └──index.js     

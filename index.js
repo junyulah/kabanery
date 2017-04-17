@@ -5,7 +5,9 @@ module.exports = require('./src');
 /**
  * @readme-quick-run
  *
- * Construct a view.
+ * Basic way to construct a view.
+ *
+ * [readme-lang:zh]构造一个组件的简单方法
  *
  * ## test tar=js r_c=kabanery env=browser
  * let {view, n, mount} = kabanery;
@@ -33,6 +35,8 @@ module.exports = require('./src');
  * @readme-quick-run
  *
  * Using update api to update a view.
+ *
+ * [readme-lang:zh]运用update api去更新一个view
  *
  * ## test tar=js r_c=kabanery env=browser
  * let {view, n, mount} = kabanery;
