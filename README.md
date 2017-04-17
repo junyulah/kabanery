@@ -55,12 +55,12 @@ mount(MyView({type: 3}), document.body);
 console.log(document.getElementById('a').outerHTML); // print result
 ```
 
-<pre>
+```
 output
 
     <div id="a" style=";font-size: 10px"><div>show text</div></div>
 
-</pre>
+```
 
 Using update api to update a view.
 
@@ -88,12 +88,12 @@ document.getElementById('a').click(); // simulate user action
 console.log(document.getElementById('a').outerHTML); // print result
 ```
 
-<pre>
+```
 output
 
     <div id="a" style=";font-size: 10px"><div>show text</div></div>
 
-</pre>
+```
 
 ## develop
 
