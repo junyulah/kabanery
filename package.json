@@ -26,6 +26,7 @@
   "dependencies": {
     "basetype": "^0.1.0",
     "bolzano": "0.0.1",
+    "describe-data": "0.0.1",
     "doming": "0.0.1",
     "jsenhance": "0.0.1",
     "ncn": "0.0.1"
@@ -36,7 +37,7 @@
     "istanbul": "^0.4.5",
     "jsdom": "^9.4.1",
     "mocha": "^3.0.2",
-    "readme-builder": "0.0.10"
+    "readme-builder": "0.0.11"
   },
   "readmeDocOptions": {
     "ignores": [

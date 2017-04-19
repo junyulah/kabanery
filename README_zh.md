@@ -58,7 +58,8 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 输出
 
-    <div id="a" style=";font-size: 10px"><div>show text</div></div>
+    <div id="a" style=";font-size: 10px"><div>third</div></div>
+    <div id="a" style=";font-size: 10px"><div>third</div></div>
 
 ```
 
@@ -91,9 +92,11 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 输出
 
-    <div id="a" style=";font-size: 10px"><div>show text</div></div>
+    <div id="a" style=";font-size: 10px"><div>third</div></div>
+    <div id="a" style=";font-size: 10px"><div>third</div></div>
 
 ```
+undefined
 
 ## 开发
 
@@ -119,28 +122,19 @@ console.log(document.getElementById('a').outerHTML); // print result
 │   │   │──eventError.js    
 │   │   │──index.js    
 │   │   └──twowaybingding.js    
+│   │──replace    
+│   │   │──applyAttributes.js    
+│   │   └──index.js    
 │   └──view.js    
 └──test    
     │──browser    
     │   │──__test    
-    │   │   │──base.js    
-    │   │   │   │──asset    
-    │   │   │   │   └──app.js    
-    │   │   │   │──index.html    
-    │   │   │   │──index.js    
-    │   │   │   │──test.js    
-    │   │   │   └──webpack.config.js    
-    │   │   └──bubble.js    
+    │   │   └──base.js    
     │   │       │──index.html    
     │   │       │──index.js    
     │   │       │──test.js    
     │   │       └──webpack.config.js    
     │   └──case    
-    │       └──event    
-    │           │──base.js    
-    │           │──bubble.js    
-    │           │──stopPropagation.js    
-    │           └──updatePassingView.js    
     └──function    
         │──browser.js    
         └──index.js     
