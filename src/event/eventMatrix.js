@@ -21,7 +21,12 @@ module.exports = () => {
     let attachDocument = (doc = document) => {
         if (!contain(docs, doc)) {
             for (let type in eventTypeMap) {
-                doc.addEventListener(type, listener(type));
+                // prevent multiple version of kabanery to binding multiple times
+                let id = getGlobalEventTypeId(type);
+                if (!doc[id]) {
+                    doc.addEventListener(type, listener(type));
+                    doc[id] = true;
+                }
             }
             docs.push(doc);
         }
@@ -87,3 +92,5 @@ let getNodePath = (target) => {
     }
     return paths;
 };
+
+let getGlobalEventTypeId = (type) => `__event_type_id_${type}`;
