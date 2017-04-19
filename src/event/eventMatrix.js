@@ -45,7 +45,7 @@ module.exports = () => {
         let oldProp = e.stopPropagation;
         e.stopPropagation = function(...args) {
             e.__stopPropagation = true;
-            return oldProp.apply(ctx, args);
+            return oldProp.apply(this, args);
         };
 
         let nodePath = getNodePath(target);
