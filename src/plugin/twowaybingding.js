@@ -12,8 +12,8 @@ module.exports = (obj, path) => (tagName, attributes, childExp) => {
         childExp.unshift(value);
     }
 
-    if (!attributes.onkeyup) {
-        attributes.onkeyup = (e) => {
+    if (!attributes.oninput) {
+        attributes.oninput = (e) => {
             set(obj, path, e.target.value);
         };
     }

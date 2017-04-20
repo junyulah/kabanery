@@ -18,6 +18,7 @@ let runFileInBrowser = (file) => {
 let testFiles = {
     'event:base': path.join(__dirname, '../browser/case/event/base.js'),
     'event:bubble': path.join(__dirname, '../browser/case/event/bubble.js'),
+    'event:transfer': path.join(__dirname, '../browser/case/event/transferEvent.js'),
     'event:updatePassingView': path.join(__dirname, '../browser/case/event/updatePassingView.js'),
     'event:stopPropagation': path.join(__dirname, '../browser/case/event/stopPropagation.js'),
     'update:base': path.join(__dirname, '../browser/case/update/base.js')

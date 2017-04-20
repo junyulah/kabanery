@@ -64,10 +64,17 @@ let diffNode = (node, newNode) => {
 let editNode = (node, newNode) => {
     // attributes
     applyAttibutes(node, newNode);
+
     // transfer context
     if (newNode.ctx) {
         newNode.ctx.transferCtx(node);
     }
+
+    // transfer event map
+    if (newNode.__eventMap) {
+        node.__eventMap = newNode.__eventMap;
+    }
+
     let orinChildNodes = toArray(node.childNodes);
     let newChildNodes = toArray(newNode.childNodes);
 
