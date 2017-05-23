@@ -58,8 +58,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 输出
 
-    <div id="a" style=";font-size: 10px"><div>third</div></div>
-    <div id="a" style=";font-size: 10px"><div>third</div></div>
+    <div id="a" style="font-size: 10px"><div>third</div></div>
 
 ```
 
@@ -92,11 +91,10 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 输出
 
-    <div id="a" style=";font-size: 10px"><div>third</div></div>
-    <div id="a" style=";font-size: 10px"><div>third</div></div>
+    <div id="a" style="font-size: 10px"><div>third</div></div>
 
 ```
-undefined
+
 
 ## 开发
 
@@ -137,7 +135,8 @@ undefined
     │   └──case    
     └──function    
         │──browser.js    
-        └──index.js     
+        │──index.js    
+        └──serverSide.js     
 ```
 
 
