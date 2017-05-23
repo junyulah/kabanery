@@ -1,6 +1,6 @@
 {
   "name": "kabanery",
-  "version": "0.1.11",
+  "version": "0.2.0",
   "description": "A Front End Render Framework\n[readme-lang:zh]一种前端渲染框架",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,7 @@
     "describe-data": "0.0.1",
     "doming": "0.0.1",
     "jsenhance": "0.0.1",
-    "ncn": "0.0.3"
+    "ncn": "0.0.4"
   },
   "devDependencies": {
     "browser-js-env": "0.0.5",

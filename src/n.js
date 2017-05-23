@@ -7,7 +7,7 @@ let {
     map
 } = require('bolzano');
 let {
-    isObject
+    isObject, isNode
 } = require('basetype');
 let {
     createElement, createSvgElement, nodeGener, parseArgs
@@ -97,10 +97,26 @@ let reduceNode = (node) => {
     }
 };
 
+let toHTML = (node) => {
+    if (isNode(node)) {
+        return node.outerHTML;
+    } else if (isKabaneryNode(node)) {
+        let {
+            tagName, attrMap, childNodes
+        } = node;
+        let attrStr = map(attrMap, (value, key) => `${key}="${value}"`).join(' ');
+        attrStr = attrStr ? ' ' + attrStr : '';
+        return `<${tagName}${attrStr}>${map(childNodes, toHTML).join('')}</${tagName}>`;
+    } else {
+        return node + '';
+    }
+};
+
 module.exports = {
     n: cn('html'),
     svgn: cn('svg'),
     bindPlugs,
     isKabaneryNode,
-    reduceNode
+    reduceNode,
+    toHTML
 };

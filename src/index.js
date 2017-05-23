@@ -1,7 +1,7 @@
 'use strict';
 
 let {
-    n, svgn, bindPlugs
+    n, svgn, bindPlugs, toHTML, reduceNode
 } = require('./n');
 
 let {
@@ -24,6 +24,8 @@ module.exports = {
     plugs,
     bindPlugs,
     mount,
+    toHTML,
+    reduceNode,
 
     parseArgs
 };
