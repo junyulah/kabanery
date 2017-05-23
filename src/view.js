@@ -14,6 +14,10 @@ let {
 
 let replace = require('./replace');
 
+let {
+    reduceNode
+} = require('./n');
+
 /**
  * render function: (data) => node
  */
@@ -127,6 +131,7 @@ let createCtx = ({
 
     let replaceView = () => {
         let newNode = getNewNode();
+        newNode = reduceNode(newNode);
 
         // type check for newNode
 

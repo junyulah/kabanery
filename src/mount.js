@@ -12,13 +12,19 @@ let {
     flat, forEach
 } = require('bolzano');
 
+let {
+    reduceNode
+} = require('./n');
+
 /**
  * @param parentNode
  *      the dom node used hook node we rendered
  */
 module.exports = (kabaneryRoots, parentNode) => {
     kabaneryRoots = flat(kabaneryRoots);
+
     forEach(kabaneryRoots, (item) => {
+        item = reduceNode(item);
         if (isNode(item)) {
             parentNode.appendChild(item);
         }

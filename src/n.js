@@ -1,17 +1,23 @@
 'use strict';
 
 let {
-    createElement, createSvgElement, parseArgs, nodeGener
-} = require('ncn');
-
-let {
     bindEvents
 } = require('./event');
+let {
+    map
+} = require('bolzano');
+let {
+    isObject
+} = require('basetype');
+let {
+    createElement, createSvgElement, nodeGener, parseArgs
+} = require('ncn');
+
+const KABANERY_NODE = 'kabanery_node';
 
 // TODO general proxy n way
 
-let cn = (create) => {
-    let nodeGen = nodeGener(create);
+let cn = (elementType) => {
     return (...args) => {
         let {
             tagName, attributes, childs
@@ -24,15 +30,17 @@ let cn = (create) => {
             attrMap, eventMap
         } = splitAttribues(attributes);
 
-        // TODO delay node gen operations
-        let node = nodeGen(tagName, attrMap, childs);
-
-        // tmp solution
-        bindEvents(node, eventMap);
-
-        return node;
+        return {
+            tagName,
+            attrMap,
+            eventMap,
+            elementType,
+            type: KABANERY_NODE, childNodes: childs,
+        };
     };
 };
+
+let isKabaneryNode = (v) => isObject(v) && v.type === KABANERY_NODE;
 
 let bindPlugs = (typen, plugs = []) => (...args) => {
     let {
@@ -71,8 +79,28 @@ let splitAttribues = (attributes) => {
     };
 };
 
+let reduceNode = (node) => {
+    if (isKabaneryNode(node)) {
+        let nodeGen = null;
+        if (node.elementType === 'html') {
+            nodeGen = nodeGener(createElement);
+        } else {
+            nodeGen = nodeGener(createSvgElement);
+        }
+
+        let tarNode = nodeGen(node.tagName, node.attrMap, map(node.childNodes, reduceNode));
+        bindEvents(tarNode, node.eventMap);
+
+        return tarNode;
+    } else {
+        return node;
+    }
+};
+
 module.exports = {
-    n: cn(createElement),
-    svgn: cn(createSvgElement),
-    bindPlugs
+    n: cn('html'),
+    svgn: cn('svg'),
+    bindPlugs,
+    isKabaneryNode,
+    reduceNode
 };
