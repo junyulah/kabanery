@@ -57,4 +57,8 @@ describe('serverSide', () => {
             }
         }, 123)), '<div id="ok" style="font: 10px;color: red">123</div>');
     });
+
+    it('style2', () => {
+        assert.equal(toHTML(n('div', n('div', 123))), '<div><div>123</div></div>');
+    });
 });

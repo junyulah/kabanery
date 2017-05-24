@@ -23,6 +23,11 @@ let cn = (elementType) => {
             tagName, attributes, childs
         } = parseArgs(args);
 
+        if(isKabaneryNode(attributes)) {
+            childs = [attributes];
+            attributes = {};
+        }
+
         // plugin
         runPlugins(attributes['plugin'], tagName, attributes, childs);
 
