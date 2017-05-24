@@ -40,7 +40,7 @@ let MyView = view((data) => {
      let {type} = data;
 
      return n('div', {
-        id: 'a',
+        id: 'test1',
         style: {
            fontSize: 10
         }
@@ -52,13 +52,13 @@ let MyView = view((data) => {
 
 mount(MyView({type: 3}), document.body);
 
-console.log(document.getElementById('a').outerHTML); // print result
+console.log(document.getElementById('test1').outerHTML); // print result
 ```
 
 ```
 输出
 
-    <div id="a" style="font-size: 10px"><div>third</div></div>
+    <div id="a" style="font-size: 10px"><div>show text</div></div>
 
 ```
 
@@ -91,7 +91,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 输出
 
-    <div id="a" style="font-size: 10px"><div>third</div></div>
+    <div id="a" style="font-size: 10px"><div>show text</div></div>
 
 ```
 
@@ -115,24 +115,34 @@ console.log(document.getElementById('a').outerHTML); // print result
 │   │   └──index.js    
 │   │──index.js    
 │   │──mount.js    
-│   │──n.js    
-│   │──plugin    
-│   │   │──eventError.js    
+│   │──n    
 │   │   │──index.js    
-│   │   └──twowaybingding.js    
-│   │──replace    
-│   │   │──applyAttributes.js    
-│   │   └──index.js    
+│   │   │──parseArgs.js    
+│   │   └──parseAttribute.js    
+│   │──reduceNode.js    
 │   └──view.js    
 └──test    
     │──browser    
     │   │──__test    
-    │   │   └──base.js    
+    │   │   │──base.js    
+    │   │   │   │──index.html    
+    │   │   │   │──index.js    
+    │   │   │   │──test.js    
+    │   │   │   └──webpack.config.js    
+    │   │   └──bubble.js    
+    │   │       │──asset    
+    │   │       │   └──app.js    
     │   │       │──index.html    
     │   │       │──index.js    
     │   │       │──test.js    
     │   │       └──webpack.config.js    
     │   └──case    
+    │       └──event    
+    │           │──base.js    
+    │           │──bubble.js    
+    │           │──stopPropagation.js    
+    │           │──transferEvent.js    
+    │           └──updatePassingView.js    
     └──function    
         │──browser.js    
         │──index.js    

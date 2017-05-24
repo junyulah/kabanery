@@ -16,7 +16,7 @@ module.exports = require('./src');
  *      let {type} = data;
  *
  *      return n('div', {
- *         id: 'a',
+ *         id: 'test1',
  *         style: {
  *            fontSize: 10
  *         }
@@ -28,7 +28,7 @@ module.exports = require('./src');
  *
  * mount(MyView({type: 3}), document.body);
  *
- * console.log(document.getElementById('a').outerHTML); // print result
+ * console.log(document.getElementById('test1').outerHTML); // print result
  */
 
 /**

@@ -70,9 +70,7 @@ let parseChildExp = (childExp) => {
             let child = childExp[i];
             ret = ret.concat(parseChildExp(child));
         }
-    } else if (childExp !== null &&
-        childExp !== undefined &&
-        childExp !== false) {
+    } else if (childExp) {
         ret.push(childExp);
     }
     return ret;
