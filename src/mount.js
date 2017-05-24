@@ -12,9 +12,7 @@ let {
     flat, forEach
 } = require('bolzano');
 
-let {
-    reduceNode
-} = require('./n');
+let reduceNode = require('./reduceNode');
 
 /**
  * @param parentNode

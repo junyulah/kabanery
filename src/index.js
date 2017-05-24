@@ -1,12 +1,8 @@
 'use strict';
 
 let {
-    n, svgn, bindPlugs, toHTML, reduceNode
+    n, svgn, bindPlugs, toHTML, parseArgs
 } = require('./n');
-
-let {
-    parseArgs
-} = require('ncn');
 
 let plugs = require('./plugin');
 
@@ -15,6 +11,8 @@ let view = require('./view');
 let mount = require('./mount');
 
 let N = require('./compose/N');
+
+let reduceNode = require('./reduceNode');
 
 module.exports = {
     n,

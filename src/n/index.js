@@ -1,17 +1,13 @@
 'use strict';
 
 let {
-    bindEvents
-} = require('./event');
-let {
     map
 } = require('bolzano');
 let {
     isObject, isNode
 } = require('basetype');
-let {
-    createElement, createSvgElement, nodeGener, parseArgs
-} = require('ncn');
+
+let parseArgs = require('./parseArgs');
 
 const KABANERY_NODE = 'kabanery_node';
 
@@ -23,7 +19,7 @@ let cn = (elementType) => {
             tagName, attributes, childs
         } = parseArgs(args);
 
-        if(isKabaneryNode(attributes)) {
+        if (isKabaneryNode(attributes)) {
             childs = [attributes];
             attributes = {};
         }
@@ -84,24 +80,7 @@ let splitAttribues = (attributes) => {
     };
 };
 
-let reduceNode = (node) => {
-    if (isKabaneryNode(node)) {
-        let nodeGen = null;
-        if (node.elementType === 'html') {
-            nodeGen = nodeGener(createElement);
-        } else {
-            nodeGen = nodeGener(createSvgElement);
-        }
-
-        let tarNode = nodeGen(node.tagName, node.attrMap, map(node.childNodes, reduceNode));
-        bindEvents(tarNode, node.eventMap);
-
-        return tarNode;
-    } else {
-        return node;
-    }
-};
-
+// TODO svg
 let toHTML = (node) => {
     if (isNode(node)) {
         return node.outerHTML;
@@ -122,6 +101,6 @@ module.exports = {
     svgn: cn('svg'),
     bindPlugs,
     isKabaneryNode,
-    reduceNode,
-    toHTML
+    toHTML,
+    parseArgs
 };

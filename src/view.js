@@ -14,9 +14,7 @@ let {
 
 let replace = require('./replace');
 
-let {
-    reduceNode
-} = require('./n');
+let reduceNode = require('./reduceNode');
 
 /**
  * render function: (data) => node
