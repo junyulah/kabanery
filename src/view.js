@@ -16,6 +16,8 @@ let replace = require('./replace');
 
 let reduceNode = require('./reduceNode');
 
+let mount = require('./mount');
+
 /**
  * render function: (data) => node
  */
@@ -121,9 +123,9 @@ let createCtx = ({
         }
     };
 
-    let append = (item, viewFun) => {
+    let appendView = (itemView) => {
         if (node) {
-            node.appendChild(viewFun(item));
+            mount(itemView, node);
         }
     };
 
@@ -176,7 +178,7 @@ let createCtx = ({
         transferCtx,
         initData,
         replaceView,
-        append,
+        appendView,
         getCtx
     };
 

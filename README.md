@@ -30,6 +30,32 @@ Install on global, using `npm i kabanery -g`
 
 ### API quick run
 
+Using method n to construct dom node quickly.
+
+
+```js
+let kabanery = require('kabanery')
+let {n, mount} = kabanery;
+
+mount(n('div', {
+  id: 'qu',
+  style: {
+     backgroundColor: 'red'
+  }
+}, [
+     n('span class=go style="font-size:16px"')
+]), document.body);
+
+console.log(document.getElementById('qu').outerHTML); // print result
+```
+
+```
+output
+
+    <div id="test1" style="font-size: 10px"><div>third</div></div>
+
+```
+
 Basic way to construct a view.
 
 
@@ -59,7 +85,7 @@ console.log(document.getElementById('test1').outerHTML); // print result
 ```
 output
 
-    <div id="a" style="font-size: 10px"><div>show text</div></div>
+    <div id="test1" style="font-size: 10px"><div>third</div></div>
 
 ```
 
@@ -93,7 +119,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 output
 
-    <div id="a" style="font-size: 10px"><div>show text</div></div>
+    <div id="test1" style="font-size: 10px"><div>third</div></div>
 
 ```
 
@@ -121,30 +147,19 @@ output
 │   │   │──index.js    
 │   │   │──parseArgs.js    
 │   │   └──parseAttribute.js    
+│   │──ncn    
+│   │   └──index.js    
 │   │──reduceNode.js    
 │   └──view.js    
 └──test    
     │──browser    
     │   │──__test    
-    │   │   │──base.js    
-    │   │   │   │──index.html    
-    │   │   │   │──index.js    
-    │   │   │   │──test.js    
-    │   │   │   └──webpack.config.js    
-    │   │   └──bubble.js    
-    │   │       │──asset    
-    │   │       │   └──app.js    
+    │   │   └──base.js    
     │   │       │──index.html    
     │   │       │──index.js    
     │   │       │──test.js    
     │   │       └──webpack.config.js    
     │   └──case    
-    │       └──event    
-    │           │──base.js    
-    │           │──bubble.js    
-    │           │──stopPropagation.js    
-    │           │──transferEvent.js    
-    │           └──updatePassingView.js    
     └──function    
         │──browser.js    
         │──index.js    

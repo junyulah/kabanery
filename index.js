@@ -5,6 +5,28 @@ module.exports = require('./src');
 /**
  * @readme-quick-run
  *
+ * Using method n to construct dom node quickly.
+ *
+ * [readme-lang:zh]用方法n快速构造dom节点
+ *
+ * ## test tar=js r_c=kabanery env=browser
+ * let {n, mount} = kabanery;
+ *
+ * mount(n('div', {
+ *   id: 'qu',
+ *   style: {
+ *      backgroundColor: 'red'
+ *   }
+ * }, [
+ *      n('span class=go style="font-size:16px"')
+ * ]), document.body);
+ *
+ * console.log(document.getElementById('qu').outerHTML); // print result
+ */
+
+/**
+ * @readme-quick-run
+ *
  * Basic way to construct a view.
  *
  * [readme-lang:zh]构造一个组件的简单方法

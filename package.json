@@ -1,6 +1,6 @@
 {
   "name": "kabanery",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A Front End Render Framework\n[readme-lang:zh]一种前端渲染框架",
   "main": "index.js",
   "scripts": {

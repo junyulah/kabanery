@@ -22,6 +22,7 @@ let testFiles = {
     'event:updatePassingView': path.join(__dirname, '../browser/case/event/updatePassingView.js'),
     'event:stopPropagation': path.join(__dirname, '../browser/case/event/stopPropagation.js'),
     'update:base': path.join(__dirname, '../browser/case/update/base.js'),
+    'append:base': path.join(__dirname, '../browser/case/append/base.js'),
     'svg:base': path.join(__dirname, '../browser/case/svg/base.js')
 };
 
