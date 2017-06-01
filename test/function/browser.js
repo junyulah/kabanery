@@ -21,6 +21,7 @@ let testFiles = {
     'event:transfer': path.join(__dirname, '../browser/case/event/transferEvent.js'),
     'event:dispatchEvent:base': path.join(__dirname, '../browser/case/event/dispatchEvent/base.js'),
     'event:dispatchEvent:input': path.join(__dirname, '../browser/case/event/dispatchEvent/input.js'),
+    'event:dispatchEvent:stopPropagation': path.join(__dirname, '../browser/case/event/dispatchEvent/stopPropagation.js'),
     'event:updatePassingView': path.join(__dirname, '../browser/case/event/updatePassingView.js'),
     'event:stopPropagation': path.join(__dirname, '../browser/case/event/stopPropagation.js'),
     'update:base': path.join(__dirname, '../browser/case/update/base.js'),
