@@ -7,6 +7,7 @@ let {
 module.exports = () => {
     let docs = [];
     let eventTypeMap = {};
+    let handlerMap = {};
 
     let listenEventType = (type) => {
         if (!eventTypeMap[type]) {
@@ -24,7 +25,7 @@ module.exports = () => {
                 // prevent multiple version of kabanery to binding multiple times
                 let id = getGlobalEventTypeId(type);
                 if (!doc[id]) {
-                    doc.addEventListener(type, listener(type));
+                    addEventListenerToDoc(doc, type);
                     doc[id] = true;
                 }
             }
@@ -38,10 +39,27 @@ module.exports = () => {
         }
         for (let i = 0; i < docs.length; i++) {
             let doc = docs[i];
-            doc.addEventListener(type, listener(type));
+            addEventListenerToDoc(doc, type);
         }
     };
 
+    let addEventListenerToDoc = (doc, type) => {
+        let handler = null;
+        if (handlerMap[type]) {
+            handler = handlerMap[type];
+        } else {
+            handler = listener(type);
+            handlerMap[type] = handler;
+        }
+        doc.addEventListener(type, handler);
+    };
+
+    /**
+     * e = {
+     *  target,
+     *  stopPropagation [optional]
+     * }
+     */
     let listener = (type) => function(e) {
         let ctx = this;
         let target = e.target;
@@ -50,7 +68,7 @@ module.exports = () => {
         let oldProp = e.stopPropagation;
         e.stopPropagation = function(...args) {
             e.__stopPropagation = true;
-            return oldProp.apply(this, args);
+            return oldProp && oldProp.apply(this, args);
         };
 
         let nodePath = getNodePath(target);
@@ -75,9 +93,15 @@ module.exports = () => {
         return eventMap && eventMap[type];
     };
 
+    let dispatchEvent = (type, e) => {
+        let handler = handlerMap[type];
+        handler && handler(e);
+    };
+
     return {
         listenEventType,
-        attachDocument
+        attachDocument,
+        dispatchEvent
     };
 };
 

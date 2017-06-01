@@ -4,7 +4,8 @@ let EventMatrix = require('./eventMatrix');
 
 let {
     listenEventType,
-    attachDocument
+    attachDocument,
+    dispatchEvent
 } = EventMatrix();
 
 let bindEvents = (node, eventMap) => {
@@ -18,5 +19,6 @@ let bindEvents = (node, eventMap) => {
 
 module.exports = {
     bindEvents,
-    attachDocument
+    attachDocument,
+    dispatchEvent
 };
