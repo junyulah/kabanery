@@ -1,7 +1,7 @@
 {
   "name": "kabanery",
   "version": "0.2.4",
-  "description": "A Front End Render Framework\n[readme-lang:zh]一种前端渲染框架",
+  "description": "Data-driven, easy-composing front end view definition\n[readme-lang:zh]数据驱动易于组合的组件定义模式",
   "main": "index.js",
   "scripts": {
     "test": "mocha \"test/function/**/*.js\"",

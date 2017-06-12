@@ -2,7 +2,7 @@
 
 [中文文档](./README_zh.md)   [document](./README.md)
 
-A Front End Render Framework
+Data-driven, easy-composing front end view definition
 - [install](#install)
 - [features](#features)
 - [usage](#usage)
