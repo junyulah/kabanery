@@ -4,7 +4,7 @@
 
 一种前端渲染框架
 - [安装](#%E5%AE%89%E8%A3%85)
-- [features](#features)
+- [特征](#%E7%89%B9%E5%BE%81)
 - [使用方法](#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
   * [API 快速运行](#api-%E5%BF%AB%E9%80%9F%E8%BF%90%E8%A1%8C)
 - [开发](#%E5%BC%80%E5%8F%91)
@@ -18,13 +18,13 @@
 
 全局安装, 使用 `npm i kabanery -g`
 
-## features
+## 特征
 
-- simple DOM DSL
+- 简单的DOM DSL，快速构建DOM结构
 
-- data-driven view, include updating view by data
+- 数据驱动视图，包括通过数据更新视图
 
-- Just functions, easy to compose
+- 以函数为核心，易于复合
 
 ## 使用方法
 

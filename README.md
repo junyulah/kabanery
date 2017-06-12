@@ -20,11 +20,12 @@ Install on global, using `npm i kabanery -g`
 
 ## features
 
-- simple DOM DSL
+- simple DOM DSL, construct dom tree quickly
 
 - data-driven view, include updating view by data
 
 - Just functions, easy to compose
+
 
 ## usage
 

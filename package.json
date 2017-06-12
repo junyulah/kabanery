@@ -36,7 +36,7 @@
     "istanbul": "^0.4.5",
     "jsdom": "^9.4.1",
     "mocha": "^3.0.2",
-    "readme-builder": "0.0.14"
+    "readme-builder": "0.0.15"
   },
   "readmeDocOptions": {
     "ignores": [

@@ -7,11 +7,20 @@ module.exports = require('./src');
  *
  * ## features
  *
- * - simple DOM DSL
+ * - simple DOM DSL, construct dom tree quickly
  *
  * - data-driven view, include updating view by data
  *
  * - Just functions, easy to compose
+ *
+ * [readme-lang:zh]## 特征
+ *
+ * - 简单的DOM DSL，快速构建DOM结构
+ *
+ * - 数据驱动视图，包括通过数据更新视图
+ *
+ * - 以函数为核心，易于复合
+ *
  */
 
 /**
