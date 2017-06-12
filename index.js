@@ -3,6 +3,18 @@
 module.exports = require('./src');
 
 /**
+ * @readme-doc
+ *
+ * ## features
+ *
+ * - simple DOM DSL
+ *
+ * - data-driven view, include updating view by data
+ *
+ * - Just functions, easy to compose
+ */
+
+/**
  * @readme-quick-run
  *
  * Using method n to construct dom node quickly.
@@ -18,7 +30,7 @@ module.exports = require('./src');
  *      backgroundColor: 'red'
  *   }
  * }, [
- *      n('span class=go style="font-size:16px"')
+ *      n('span class=go style="font-size:16px"', 'hello!')
  * ]), document.body);
  *
  * console.log(document.getElementById('qu').outerHTML); // print result

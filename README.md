@@ -4,6 +4,7 @@
 
 A Front End Render Framework
 - [install](#install)
+- [features](#features)
 - [usage](#usage)
   * [API quick run](#api-quick-run)
 - [develop](#develop)
@@ -17,7 +18,13 @@ A Front End Render Framework
 
 Install on global, using `npm i kabanery -g`
 
+## features
 
+- simple DOM DSL
+
+- data-driven view, include updating view by data
+
+- Just functions, easy to compose
 
 ## usage
 
@@ -43,7 +50,7 @@ mount(n('div', {
      backgroundColor: 'red'
   }
 }, [
-     n('span class=go style="font-size:16px"')
+     n('span class=go style="font-size:16px"', 'hello!')
 ]), document.body);
 
 console.log(document.getElementById('qu').outerHTML); // print result
@@ -52,7 +59,7 @@ console.log(document.getElementById('qu').outerHTML); // print result
 ```
 output
 
-    <div id="test1" style="font-size: 10px"><div>third</div></div>
+    <div id="qu" style="background-color: red"><span class="go" style="font-size:16px">hello!</span></div>
 
 ```
 
@@ -119,7 +126,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 output
 
-    <div id="test1" style="font-size: 10px"><div>third</div></div>
+    <div id="a" style="font-size: 10px"><div>show text</div></div>
 
 ```
 
@@ -151,19 +158,20 @@ output
 │   │   └──index.js    
 │   │──reduceNode.js    
 │   └──view.js    
-└──test    
-    │──browser    
-    │   │──__test    
-    │   │   └──base.js    
-    │   │       │──index.html    
-    │   │       │──index.js    
-    │   │       │──test.js    
-    │   │       └──webpack.config.js    
-    │   └──case    
-    └──function    
-        │──browser.js    
-        │──index.js    
-        └──serverSide.js     
+│──test    
+│   │──browser    
+│   │   │──__test    
+│   │   │   └──base.js    
+│   │   │       │──index.html    
+│   │   │       │──index.js    
+│   │   │       │──test.js    
+│   │   │       └──webpack.config.js    
+│   │   └──case    
+│   └──function    
+│       │──browser.js    
+│       │──index.js    
+│       └──serverSide.js    
+└──todo.md     
 ```
 
 

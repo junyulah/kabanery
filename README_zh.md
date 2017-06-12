@@ -4,6 +4,7 @@
 
 一种前端渲染框架
 - [安装](#%E5%AE%89%E8%A3%85)
+- [features](#features)
 - [使用方法](#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
   * [API 快速运行](#api-%E5%BF%AB%E9%80%9F%E8%BF%90%E8%A1%8C)
 - [开发](#%E5%BC%80%E5%8F%91)
@@ -17,7 +18,13 @@
 
 全局安装, 使用 `npm i kabanery -g`
 
+## features
 
+- simple DOM DSL
+
+- data-driven view, include updating view by data
+
+- Just functions, easy to compose
 
 ## 使用方法
 
@@ -42,7 +49,7 @@ mount(n('div', {
      backgroundColor: 'red'
   }
 }, [
-     n('span class=go style="font-size:16px"')
+     n('span class=go style="font-size:16px"', 'hello!')
 ]), document.body);
 
 console.log(document.getElementById('qu').outerHTML); // print result
@@ -51,7 +58,7 @@ console.log(document.getElementById('qu').outerHTML); // print result
 ```
 输出
 
-    <div id="test1" style="font-size: 10px"><div>third</div></div>
+    <div id="qu" style="background-color: red"><span class="go" style="font-size:16px">hello!</span></div>
 
 ```
 
@@ -116,7 +123,7 @@ console.log(document.getElementById('a').outerHTML); // print result
 ```
 输出
 
-    <div id="test1" style="font-size: 10px"><div>third</div></div>
+    <div id="a" style="font-size: 10px"><div>show text</div></div>
 
 ```
 
@@ -148,19 +155,20 @@ console.log(document.getElementById('a').outerHTML); // print result
 │   │   └──index.js    
 │   │──reduceNode.js    
 │   └──view.js    
-└──test    
-    │──browser    
-    │   │──__test    
-    │   │   └──base.js    
-    │   │       │──index.html    
-    │   │       │──index.js    
-    │   │       │──test.js    
-    │   │       └──webpack.config.js    
-    │   └──case    
-    └──function    
-        │──browser.js    
-        │──index.js    
-        └──serverSide.js     
+│──test    
+│   │──browser    
+│   │   │──__test    
+│   │   │   └──base.js    
+│   │   │       │──index.html    
+│   │   │       │──index.js    
+│   │   │       │──test.js    
+│   │   │       └──webpack.config.js    
+│   │   └──case    
+│   └──function    
+│       │──browser.js    
+│       │──index.js    
+│       └──serverSide.js    
+└──todo.md     
 ```
 
 
