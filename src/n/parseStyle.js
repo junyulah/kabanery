@@ -5,7 +5,10 @@ let {
     isObject
 } = require('basetype');
 
-module.exports = (attr = '') => {
+module.exports = (attr = '', {
+    keyWrapper,
+    valueWrapper
+} = {}) => {
     if (isString(attr)) {
         return attr;
     }
@@ -18,6 +21,14 @@ module.exports = (attr = '') => {
         let value = attr[key];
         key = convertStyleKey(key);
         value = convertStyleValue(value, key);
+        if (keyWrapper) {
+            key = keyWrapper(key, value);
+        }
+
+        if (valueWrapper) {
+            value = valueWrapper(value, key);
+        }
+
         styles.push(`${key}: ${value};`);
     }
     return styles.join('');

@@ -1,6 +1,6 @@
 {
   "name": "kabanery",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Data-driven, easy-composing front end view definition\n[readme-lang:zh]数据驱动易于组合的组件定义模式",
   "main": "index.js",
   "scripts": {
