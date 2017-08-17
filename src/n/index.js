@@ -9,6 +9,8 @@ let {
 
 let parseArgs = require('./parseArgs');
 
+let parseStyle = require('./parseStyle');
+
 const KABANERY_NODE = 'kabanery_node';
 
 // TODO general proxy n way
@@ -102,5 +104,6 @@ module.exports = {
     bindPlugs,
     isKabaneryNode,
     toHTML,
-    parseArgs
+    parseArgs,
+    parseStyle
 };

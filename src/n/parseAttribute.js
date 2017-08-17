@@ -1,8 +1,10 @@
 'use strict';
 
 let {
-    isString, isObject
+    isString
 } = require('basetype');
+
+let parseStyle = require('./parseStyle');
 
 let {
     mergeMap
@@ -45,61 +47,19 @@ let parseAttribute = (attributes, nextAttr) => {
     attributes = mergeMap(attributes, nextAttr);
 
     if (attributes.style) {
-        attributes.style = getStyleString(attributes.style);
+        attributes.style = parseStyle(attributes.style);
     }
 
     // TODO presudo
     /*
     if (attributes.presudo) {
         for (let name in attributes.presudo) {
-            attributes.presudo[name] = getStyleString(attributes.presudo[name]);
+            attributes.presudo[name] = parseStyle(attributes.presudo[name]);
         }
     }
    */
 
     return attributes;
-};
-
-let getStyleString = (attr = '') => {
-    if (isString(attr)) {
-        return attr;
-    }
-
-    if (!isObject(attr)) {
-        throw new TypeError(`Expect object for style object, but got ${attr}`);
-    }
-    let styles = [];
-    for (let key in attr) {
-        let value = attr[key];
-        key = convertStyleKey(key);
-        value = convertStyleValue(value, key);
-        styles.push(`${key}: ${value}`);
-    }
-    return styles.join(';');
-};
-
-let convertStyleKey = (key) => {
-    return key.replace(/[A-Z]/, (letter) => {
-        return `-${letter.toLowerCase()}`;
-    });
-};
-
-let convertStyleValue = (value, key) => {
-    if (typeof value === 'number' && key !== 'z-index') {
-        return value + 'px';
-    }
-    if (key === 'padding' || key === 'margin') {
-        let parts = value.split(' ');
-        for (let i = 0; i < parts.length; i++) {
-            let part = parts[i];
-            if (!isNaN(Number(part))) {
-                parts[i] = part + 'px';
-            }
-        }
-
-        value = parts.join(' ');
-    }
-    return value;
 };
 
 module.exports = parseAttribute;

@@ -45,7 +45,7 @@ describe('serverSide', () => {
             style: {
                 font: 10
             }
-        }, 123)), '<div id="ok" style="font: 10px">123</div>');
+        }, 123)), '<div id="ok" style="font: 10px;">123</div>');
     });
 
     it('style2', () => {
@@ -55,7 +55,7 @@ describe('serverSide', () => {
                 font: 10,
                 color: 'red'
             }
-        }, 123)), '<div id="ok" style="font: 10px;color: red">123</div>');
+        }, 123)), '<div id="ok" style="font: 10px;color: red;">123</div>');
     });
 
     it('style2', () => {
