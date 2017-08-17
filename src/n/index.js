@@ -101,6 +101,7 @@ let toHTML = (node) => {
 module.exports = {
     n: cn('html'),
     svgn: cn('svg'),
+    cn,
     bindPlugs,
     isKabaneryNode,
     toHTML,
