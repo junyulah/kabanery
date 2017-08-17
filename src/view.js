@@ -5,7 +5,9 @@ let {
 } = require('jsenhance');
 
 let {
-    isObject, isFunction, likeArray
+    isObject,
+    isFunction,
+    likeArray
 } = require('basetype');
 
 let {
@@ -33,7 +35,8 @@ let View = (view, construct, {
     let viewer = (obj, initor) => {
         // create context
         let ctx = createCtx({
-            view, afterRender
+            view,
+            afterRender
         });
 
         return createView(ctx, obj, initor, construct);
@@ -42,7 +45,8 @@ let View = (view, construct, {
     let viewerOps = (viewer) => {
         viewer.create = (handler) => {
             let ctx = createCtx({
-                view, afterRender
+                view,
+                afterRender
             });
 
             handler && handler(ctx);
@@ -96,20 +100,24 @@ let createView = (ctx, obj, initor, construct) => {
 };
 
 let createCtx = ({
-    view, afterRender
+    view,
+    afterRender
 }) => {
     let node = null,
         data = null,
         render = null;
 
     let update = (...args) => {
-        if (!args.length) return replaceView();
+        updateData(...args);
+        return replaceView();
+    };
+
+    let updateData = (...args) => {
         if (args.length === 1 && likeArray(args[0])) {
             let arg = args[0];
             forEach(arg, (item) => {
                 set(data, item[0], item[1]);
             });
-            return replaceView();
         } else {
             let [path, value] = args;
 
@@ -119,7 +127,6 @@ let createCtx = ({
             }
 
             set(data, path, value);
-            return replaceView();
         }
     };
 
@@ -173,6 +180,7 @@ let createCtx = ({
 
     let ctx = {
         update,
+        updateData,
         getNode,
         getData,
         transferCtx,
