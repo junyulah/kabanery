@@ -27,8 +27,6 @@ let parseArgs = (args) => {
         tagName = first;
     }
 
-    tagName = tagName.toLowerCase().trim();
-
     let next = args.shift();
 
     let nextAttr = {};
@@ -61,6 +59,8 @@ let splitTagNameAttribute = (str = '') => {
     let tagName = str.split(' ')[0];
     let attr = str.substring(tagName.length);
     attr = attr && attr.trim();
+
+    tagName = tagName.toLowerCase().trim();
     if (attr) {
         return [tagName, attr];
     } else {
