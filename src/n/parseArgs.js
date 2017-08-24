@@ -12,7 +12,7 @@ let {
 } = require('basetype');
 
 let parseArgs = (args, {
-    doParseAttribute = true
+    doParseStyle = true
 } = {}) => {
     let tagName,
         attributes = {},
@@ -44,9 +44,9 @@ let parseArgs = (args, {
         childExp = args.shift() || [];
     }
 
-    if (doParseAttribute) {
-        attributes = parseAttribute(attributes, nextAttr);
-    }
+    attributes = parseAttribute(attributes, nextAttr, {
+        doParseStyle
+    });
 
     let childs = parseChildExp(childExp);
 

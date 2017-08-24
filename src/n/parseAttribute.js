@@ -14,7 +14,9 @@ const ITEM_REG = /([\w-]+)\s*=\s*(([\w-]+)|('.*?')|(".*?"))/;
 
 // TODO better key=value grammer
 // TODO refactor with grammerL: class grammer, id grammer, refer some popular grammer
-let parseAttribute = (attributes, nextAttr) => {
+let parseAttribute = (attributes, nextAttr, {
+    doParseStyle
+}) => {
     // key=value key=value
     // value='abc' value=true value=123 value="def"
     if (isString(attributes)) {
@@ -46,7 +48,7 @@ let parseAttribute = (attributes, nextAttr) => {
     // merge
     attributes = mergeMap(attributes, nextAttr);
 
-    if (attributes.style) {
+    if (attributes.style && doParseStyle) {
         attributes.style = parseStyle(attributes.style);
     }
 
