@@ -3,7 +3,12 @@
 let parseAttribute = require('./parseAttribute');
 
 let {
-    isString, isObject, isNode, likeArray, isNumber, isBool
+    isString,
+    isObject,
+    isNode,
+    likeArray,
+    isNumber,
+    isBool
 } = require('basetype');
 
 let parseArgs = (args) => {
@@ -51,6 +56,8 @@ let parseArgs = (args) => {
 };
 
 let splitTagNameAttribute = (str = '') => {
+    if (typeof str !== 'string') return [str];
+
     let tagName = str.split(' ')[0];
     let attr = str.substring(tagName.length);
     attr = attr && attr.trim();
