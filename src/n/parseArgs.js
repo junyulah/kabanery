@@ -11,7 +11,9 @@ let {
     isBool
 } = require('basetype');
 
-let parseArgs = (args) => {
+let parseArgs = (args, {
+    doParseAttribute = true
+} = {}) => {
     let tagName,
         attributes = {},
         childExp = [];
@@ -42,7 +44,9 @@ let parseArgs = (args) => {
         childExp = args.shift() || [];
     }
 
-    attributes = parseAttribute(attributes, nextAttr);
+    if (doParseAttribute) {
+        attributes = parseAttribute(attributes, nextAttr);
+    }
 
     let childs = parseChildExp(childExp);
 
