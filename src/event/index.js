@@ -8,6 +8,7 @@ let {
 
 let {
     listenEventType,
+    clearEvents,
     attachDocument,
     dispatchEvent
 } = EventMatrix();
@@ -24,5 +25,6 @@ let bindEvents = (node, eventMap) => {
 module.exports = {
     bindEvents,
     attachDocument,
-    dispatchEvent
+    dispatchEvent,
+    clearEvents
 };

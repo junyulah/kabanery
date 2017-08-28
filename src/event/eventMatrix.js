@@ -60,6 +60,26 @@ module.exports = () => {
         doc.addEventListener(type, handler);
     };
 
+    let clearEvents = () => {
+        for (let type in eventTypeMap) {
+            removeListenerType(type);
+        }
+    };
+
+    let removeListenerType = (type) => {
+        let handler = handlerMap[type];
+        if (handler) {
+            for (let i = 0; i < docs.length; i++) {
+                let doc = docs[i];
+                doc.removeEventListener(type, handler);
+            }
+            delete handlerMap[type];
+            delete eventTypeMap[type];
+        }
+    };
+
+    let getDocs = () => docs.slice(0);
+
     /**
      * e = {
      *  target,
@@ -106,6 +126,9 @@ module.exports = () => {
 
     return {
         listenEventType,
+        clearEvents,
+        removeListenerType,
+        getDocs,
         attachDocument,
         dispatchEvent
     };

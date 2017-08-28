@@ -1,7 +1,14 @@
 'use strict';
 
 let {
-    n, svgn, bindPlugs, toHTML, parseArgs, isKabaneryNode, cn, parseStyle
+    n,
+    svgn,
+    bindPlugs,
+    toHTML,
+    parseArgs,
+    isKabaneryNode,
+    cn,
+    parseStyle
 } = require('./n');
 
 let plugs = require('./plugin');
@@ -14,7 +21,10 @@ let N = require('./compose/N');
 
 let reduceNode = require('./reduceNode');
 
-let {dispatchEvent} = require('./event');
+let {
+    dispatchEvent,
+    clearEvents
+} = require('./event');
 
 module.exports = {
     n,
@@ -31,5 +41,6 @@ module.exports = {
 
     parseArgs,
     parseStyle,
-    dispatchEvent
+    dispatchEvent,
+    clearEvents
 };
