@@ -12,6 +12,10 @@ let {
     forEach
 } = require('bolzano');
 
+let {
+    eventMapHook
+} = require('../const');
+
 let applyAttibutes = require('./applyAttributes');
 
 let replaceDirectly = (node, newNode) => {
@@ -71,8 +75,8 @@ let editNode = (node, newNode) => {
     }
 
     // transfer event map
-    if (newNode.__eventMap) {
-        node.__eventMap = newNode.__eventMap;
+    if (newNode[eventMapHook]) {
+        node[eventMapHook] = newNode[eventMapHook];
     }
 
     let orinChildNodes = toArray(node.childNodes);

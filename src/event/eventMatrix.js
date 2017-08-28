@@ -4,6 +4,12 @@ let {
     contain
 } = require('bolzano');
 
+let {
+    eventMapHook,
+    globalEventTypePrefix,
+    stopPropagationFlag
+} = require('../const');
+
 module.exports = () => {
     let docs = [];
     let eventTypeMap = {};
@@ -22,7 +28,7 @@ module.exports = () => {
     let attachDocument = (doc = document) => {
         if (!contain(docs, doc)) {
             for (let type in eventTypeMap) {
-                // prevent multiple version of kabanery to binding multiple times
+                // prevent multiple version of kabanery to binding multiple times for the same type
                 let id = getGlobalEventTypeId(type);
                 if (!doc[id]) {
                     addEventListenerToDoc(doc, type);
@@ -67,7 +73,7 @@ module.exports = () => {
         // hack the stopPropagration function
         let oldProp = e.stopPropagation;
         e.stopPropagation = function(...args) {
-            e.__stopPropagation = true;
+            e[stopPropagationFlag] = true;
             return oldProp && oldProp.apply(this, args);
         };
 
@@ -89,7 +95,7 @@ module.exports = () => {
     };
 
     let getHandler = (type, target) => {
-        let eventMap = target && target.__eventMap;
+        let eventMap = target && target[eventMapHook];
         return eventMap && eventMap[type];
     };
 
@@ -117,4 +123,4 @@ let getNodePath = (target) => {
     return paths;
 };
 
-let getGlobalEventTypeId = (type) => `__event_type_id_${type}`;
+let getGlobalEventTypeId = (type) => `${globalEventTypePrefix}${type}`;

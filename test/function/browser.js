@@ -10,7 +10,7 @@ let runFileInBrowser = (file) => {
     return readFile(file).then((str) => {
         return browserJsEnv(str, {
             testDir: path.join(path.dirname(file), `../../__test/${path.basename(file)}`),
-            //clean: true
+            clean: true
         });
     });
 };

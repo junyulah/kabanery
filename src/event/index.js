@@ -3,6 +3,10 @@
 let EventMatrix = require('./eventMatrix');
 
 let {
+    eventMapHook
+} = require('../const');
+
+let {
     listenEventType,
     attachDocument,
     dispatchEvent
@@ -10,7 +14,7 @@ let {
 
 let bindEvents = (node, eventMap) => {
     // hook event at node
-    node.__eventMap = eventMap;
+    node[eventMapHook] = eventMap;
 
     for (let type in eventMap) {
         listenEventType(type);
