@@ -69,6 +69,14 @@ let editNode = (node, newNode) => {
     // attributes
     applyAttibutes(node, newNode);
 
+    // hacks for dom
+    if (node.tagName === 'TEXTAREA') {
+        node.value = newNode.textContent;
+    }
+    if (node.tagName === 'INPUT') {
+        node.value = newNode.getAttribute('value');
+    }
+
     // transfer context
     if (newNode.ctx) {
         newNode.ctx.transferCtx(node);
