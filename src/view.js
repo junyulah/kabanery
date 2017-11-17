@@ -140,7 +140,7 @@ let createCtx = ({
         let newNode = getNewNode();
         newNode = reduceNode(newNode);
 
-        // type check for newNode
+        // TODO type check for newNode
 
         node = replace(node, newNode);
 
