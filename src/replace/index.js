@@ -43,18 +43,20 @@ let diffNode = (node, newNode) => {
     }
 
     if (node.nodeType === 3 && newNode.nodeType === 3) {
-        node.textContent = newNode.textContent;
+        if (newNode.textContent !== node.textContent) {
+            node.textContent = newNode.textContent;
+        }
     }
 
     if (isNode(node) && isNode(newNode)) {
         if (node.nodeType === 3 && newNode.nodeType === 3) {
-            node.textContent = newNode.textContent;
+            if (newNode.textContent !== node.textContent) {
+                node.textContent = newNode.textContent;
+            }
             return node;
         }
 
-        if (node.tagName !== newNode.tagName ||
-            node.tagName === 'INPUT'
-        ) {
+        if (node.tagName !== newNode.tagName) {
             // TODO problems performance
             // TODO nodetype problem
             return replaceDirectly(node, newNode);
