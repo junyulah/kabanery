@@ -1,16 +1,33 @@
 'use strict';
 
-let browserJsEnv = require('browser-js-env');
-let promisify = require('es6-promisify');
-let fs = require('fs');
-let path = require('path');
-let readFile = promisify(fs.readFile);
+const browserJsEnv = require('browser-js-env');
+const promisify = require('es6-promisify');
+const fs = require('fs');
+const path = require('path');
+const puppeteer = require('puppeteer');
 
-let runFileInBrowser = (file) => {
+const readFile = promisify(fs.readFile);
+
+const headlessOpen = async(url) => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url, {
+        waitUntil: 'networkidle2'
+    });
+
+    return {
+        kill: () => {
+            browser.close();
+        }
+    };
+};
+
+const runFileInBrowser = (file) => {
     return readFile(file).then((str) => {
         return browserJsEnv(str, {
-            testDir: path.join(path.dirname(file), `../../__test/${path.basename(file)}`),
-            clean: true
+            cwd: path.dirname(file),
+            clean: true,
+            open: headlessOpen
         });
     });
 };
