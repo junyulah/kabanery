@@ -12,7 +12,7 @@ let {
     forEach
 } = require('bolzano');
 
-let applyAttibutes = (node, newNode) => {
+module.exports = (node, newNode) => {
     // attributes
     let orinAttrMap = getAttributeMap(node.attributes);
     let newAttrMap = getAttributeMap(newNode.attributes);
@@ -36,5 +36,3 @@ let applyAttibutes = (node, newNode) => {
         }
     });
 };
-
-module.exports = applyAttibutes;

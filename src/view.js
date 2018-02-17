@@ -16,8 +16,6 @@ let {
 
 let replace = require('./replace');
 
-let reduceNode = require('./reduceNode');
-
 let mount = require('./mount');
 
 /**
@@ -27,69 +25,63 @@ let mount = require('./mount');
 // TODO observable for update, append
 
 // class level
-let View = (view, construct, {
-    afterRender
-} = {}) => {
+const View = (view, construct, options = {}) => {
     // TODO class level API
     // instance level
-    let viewer = (obj, initor) => {
+    const viewer = (obj, initor) => {
         // create context
-        let ctx = createCtx({
-            view,
-            afterRender
-        });
-
+        let ctx = createCtx(view, options);
         return createView(ctx, obj, initor, construct);
     };
 
-    let viewerOps = (viewer) => {
-        viewer.create = (handler) => {
-            let ctx = createCtx({
-                view,
-                afterRender
-            });
-
-            handler && handler(ctx);
-
-            let inst = (obj, initor) => {
-                return createView(ctx, obj, initor, construct);
-            };
-
-            inst.ctx = ctx;
-
-            return inst;
-        };
-
-        // extend some context
-        viewer.expand = (ctxMap = {}) => {
-            let newViewer = (...args) => {
-                let obj = args[0];
-                args[0] = View.ext(obj, ctxMap);
-
-                return viewer(...args);
-            };
-
-            viewerOps(newViewer);
-            return newViewer;
-        };
-    };
-
-    viewerOps(viewer);
+    viewerOps(viewer, view, construct, options);
 
     return viewer;
+};
+
+/**
+ * provide some basic view operations
+ */
+const viewerOps = (viewer, view, construct, options) => {
+    viewer.create = (handler) => {
+        let ctx = createCtx(view, options);
+
+        handler && handler(ctx);
+
+        let inst = (obj, initor) => {
+            return createView(ctx, obj, initor, construct);
+        };
+
+        inst.ctx = ctx;
+
+        return inst;
+    };
+
+    // extend some context
+    viewer.expand = (ctxMap = {}) => {
+        let newViewer = (...args) => {
+            let obj = args[0];
+            args[0] = View.ext(obj, ctxMap);
+
+            return viewer(...args);
+        };
+
+        viewerOps(newViewer, view, construct, options);
+        return newViewer;
+    };
 };
 
 View.ext = (data, ctxMap = {}) => (ctx) => {
     for (let name in ctxMap) {
         ctx[name] = ctxMap[name];
     }
-    if (isFunction(data)) {
+    if (isFunction(data)) { // support data as function
         return data(ctx);
     }
     return data;
 };
 
-let createView = (ctx, obj, initor, construct) => {
+const createView = (ctx, obj, initor, construct) => {
     let data = ctx.initData(obj, ctx);
     // only run initor when construct view
     initor && initor(data, ctx);
@@ -99,50 +91,44 @@ let createView = (ctx, obj, initor, construct) => {
     return ctx.replaceView();
 };
 
-let createCtx = ({
-    view,
+const updateData = (data, scripts) => {
+    if (scripts.length === 1 && likeArray(scripts[0])) {
+        let arg = scripts[0];
+        forEach(arg, (item) => {
+            set(data, item[0], item[1]);
+        });
+    } else {
+        let [path, value] = scripts;
+
+        // function is a special data
+        if (isFunction(value)) {
+            value = value(data);
+        }
+
+        set(data, path, value);
+    }
+};
+
+const createCtx = (view, {
     afterRender
 }) => {
     let node = null,
         data = null,
         render = null;
 
-    let update = (...args) => {
-        updateData(...args);
+    const update = (...args) => {
+        updateData(data, args);
         return replaceView();
     };
 
-    let updateData = (...args) => {
-        if (args.length === 1 && likeArray(args[0])) {
-            let arg = args[0];
-            forEach(arg, (item) => {
-                set(data, item[0], item[1]);
-            });
-        } else {
-            let [path, value] = args;
-
-            // function is a special data
-            if (isFunction(value)) {
-                value = value(data);
-            }
-
-            set(data, path, value);
-        }
-    };
-
-    let appendView = (itemView) => {
+    const appendView = (itemView) => {
         if (node) {
             mount(itemView, node);
         }
     };
 
-    let replaceView = () => {
-        let newNode = getNewNode();
-        newNode = reduceNode(newNode);
-
-        // TODO type check for newNode
-
-        node = replace(node, newNode);
+    const replaceView = () => {
+        node = replace(node, getNewRenderNode());
 
         afterRender && afterRender(ctx);
 
@@ -150,9 +136,10 @@ let createCtx = ({
         return node;
     };
 
-    let getNewNode = () => {
+    const getNewRenderNode = () => {
         if (!render) render = view;
         let ret = render(data, ctx);
+
         if (isFunction(ret)) {
             render = ret;
             return render(data, ctx);
@@ -161,24 +148,24 @@ let createCtx = ({
         }
     };
 
-    let initData = (obj = {}) => {
+    const initData = (obj = {}) => {
         data = generateData(obj, ctx);
         return data;
     };
 
-    let getNode = () => node;
+    const getNode = () => node;
 
-    let getData = () => data;
+    const getData = () => data;
 
-    let getCtx = () => ctx;
+    const getCtx = () => ctx;
 
     // TODO refator
-    let transferCtx = (newNode) => {
+    const transferCtx = (newNode) => {
         node = newNode;
         newNode.ctx = ctx;
     };
 
-    let ctx = {
+    const ctx = {
         update,
         updateData,
         getNode,
@@ -193,7 +180,7 @@ let createCtx = ({
     return ctx;
 };
 
-let generateData = (obj, ctx) => {
+const generateData = (obj, ctx) => {
     let data = null;
     // data generator
     if (isFunction(obj)) {

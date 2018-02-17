@@ -1,27 +1,28 @@
 'use strict';
 
-let {
-    createElement, createSvgElement
+const {
+    createElement,
+    createSvgElement
 } = require('./ncn');
 
-let {
+const {
     bindEvents
 } = require('./event');
 
-let {
+const {
     map
 } = require('bolzano');
 
-let {
+const {
     isKabaneryNode
 } = require('./n');
 
-let reduceNode = (node) => {
+const reduceNode = (node) => {
     if (isKabaneryNode(node)) {
         let tarNode = null;
         if (node.elementType === 'html') {
             tarNode = createElement(node.tagName, node.attrMap, map(node.childNodes, reduceNode));
-        } else {
+        } else { // svg
             tarNode = createSvgElement(node.tagName, node.attrMap, map(node.childNodes, reduceNode));
         }
 

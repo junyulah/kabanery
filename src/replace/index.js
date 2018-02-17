@@ -1,24 +1,23 @@
 'use strict';
 
-let {
-    toArray
-} = require('jsenhance');
-
-let {
+const {
+    toArray,
     isNode
-} = require('basetype');
+} = require('../util');
 
 let {
     forEach
 } = require('bolzano');
 
-let {
+const {
     eventMapHook
 } = require('../const');
 
-let applyAttibutes = require('./applyAttributes');
+const applyAttibutes = require('./applyAttributes');
 
-let replaceDirectly = (node, newNode) => {
+const reduceNode = require('../reduceNode');
+
+const replaceDirectly = (node, newNode) => {
     let parent = node.parentNode;
     if (parent) {
         // replace
@@ -29,7 +28,7 @@ let replaceDirectly = (node, newNode) => {
     }
 };
 
-let removeOldNode = (oldNode) => {
+const removeOldNode = (oldNode) => {
     let parent = oldNode.parentNode;
     if (parent) {
         parent.removeChild(oldNode);
@@ -37,7 +36,7 @@ let removeOldNode = (oldNode) => {
 };
 
 // TODO using key
-let diffNode = (node, newNode) => {
+const diffNode = (node, newNode) => {
     if (!newNode) {
         return removeOldNode(node);
     }
@@ -64,10 +63,11 @@ let diffNode = (node, newNode) => {
             editNode(node, newNode);
         }
     }
+
     return node;
 };
 
-let editNode = (node, newNode) => {
+const editNode = (node, newNode) => {
     // attributes
     applyAttibutes(node, newNode);
 
@@ -96,7 +96,7 @@ let editNode = (node, newNode) => {
     convertLists(orinChildNodes, newChildNodes, node);
 };
 
-let convertLists = (orinChildNodes, newChildNodes, parent) => {
+const convertLists = (orinChildNodes, newChildNodes, parent) => {
     removeExtra(orinChildNodes, newChildNodes);
 
     // diff
@@ -108,14 +108,14 @@ let convertLists = (orinChildNodes, newChildNodes, parent) => {
     return orinChildNodes;
 };
 
-let removeExtra = (orinChildNodes, newChildNodes) => {
+const removeExtra = (orinChildNodes, newChildNodes) => {
     // remove
     for (let i = newChildNodes.length; i < orinChildNodes.length; i++) {
         removeOldNode(orinChildNodes[i]);
     }
 };
 
-let appendMissing = (orinChildNodes, newChildNodes, parent) => {
+const appendMissing = (orinChildNodes, newChildNodes, parent) => {
     // append
     for (let i = orinChildNodes.length; i < newChildNodes.length; i++) {
         let newChild = newChildNodes[i];
@@ -123,15 +123,18 @@ let appendMissing = (orinChildNodes, newChildNodes, parent) => {
     }
 };
 
-module.exports = (node, newNode) => {
+// TODO type check for newNode
+module.exports = (node, newRenderNode) => {
+    const newNode = reduceNode(newRenderNode);
+
     let ret = null;
 
-    if (!node) {
+    if (!node) { // add new node
         ret = newNode;
-    } else if (!newNode) {
+    } else if (!newNode) { // delete old node
         removeOldNode(node);
         ret = null;
-    } else {
+    } else { // diff with old node
         ret = diffNode(node, newNode);
     }
 

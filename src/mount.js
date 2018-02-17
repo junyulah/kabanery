@@ -1,18 +1,18 @@
 'use strict';
 
-let {
+const {
     attachDocument
 } = require('./event');
 
-let {
+const {
     isNode
-} = require('basetype');
+} = require('./util');
 
-let {
+const {
     flat, forEach
 } = require('bolzano');
 
-let reduceNode = require('./reduceNode');
+const reduceNode = require('./reduceNode');
 
 /**
  * @param parentNode
@@ -32,7 +32,7 @@ module.exports = (kabaneryRoots, parentNode) => {
     attachDocument(getDoc(parentNode));
 };
 
-let getDoc = (node) => {
+const getDoc = (node) => {
     while (node.parentNode) {
         node = node.parentNode;
     }
