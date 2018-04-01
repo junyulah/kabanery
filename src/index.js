@@ -1,46 +1,37 @@
 'use strict';
 
-let {
-    n,
-    svgn,
-    bindPlugs,
-    toHTML,
-    parseArgs,
-    isKabaneryNode,
-    cn,
-    parseStyle
+const {
+  n,
+  svgn,
+  parseArgs,
+  isKabaneryNode,
+  parseStyle
 } = require('./n');
 
-let plugs = require('./plugin');
+const {
+  view
+} = require('./view');
 
-let view = require('./view');
-
-let mount = require('./mount');
-
-let N = require('./compose/N');
-
-let reduceNode = require('./reduceNode');
-
-let {
-    dispatchEvent,
-    clearEvents
+const {
+  dispatchEvent,
+  clearEvents
 } = require('./event');
 
-module.exports = {
-    n,
-    isKabaneryNode,
-    cn,
-    N,
-    svgn,
-    view,
-    plugs,
-    bindPlugs,
-    mount,
-    toHTML,
-    reduceNode,
+const {
+  toHTML,
+  mount
+} = require('./resolver');
 
-    parseArgs,
-    parseStyle,
-    dispatchEvent,
-    clearEvents
+module.exports = {
+  n,
+  isKabaneryNode,
+  svgn,
+  view,
+  mount,
+  toHTML,
+
+  parseArgs,
+  parseStyle,
+  dispatchEvent,
+  clearEvents
 };

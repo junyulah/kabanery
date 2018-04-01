@@ -1,7 +1,7 @@
 'use strict';
 
 let {
-    n, view, mount
+  n, view, mount
 } = require('../../../..');
 
 let assert = require('assert');
@@ -9,31 +9,31 @@ let assert = require('assert');
 let detect = false;
 
 let PartView = view(() => {
-    return n('div id="part"', {
-        onclick: () => {
-            detect = !detect;
-        }
-    });
+  return n('div id="part"', {
+    onclick: () => {
+      detect = !detect;
+    }
+  });
 });
 
 let TestView = view(({
-    targetView
+  targetView
 }, {
-    update
+  update
 }) => {
-    let upd = false;
+  let upd = false;
 
-    return () => n('div id="test"', {
-        onclick: () => {
-            update('upd', !upd);
-        }
-    }, [!upd && targetView,
-        upd && n('span', '123')
-    ]);
+  return () => n('div id="test"', {
+    onclick: () => {
+      update('upd', !upd);
+    }
+  }, [!upd && targetView,
+    upd && n('span', '123')
+  ]);
 });
 
 mount(TestView({
-    targetView: PartView()
+  targetView: PartView()
 }), document.body);
 
 // perform click

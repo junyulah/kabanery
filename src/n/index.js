@@ -1,110 +1,97 @@
-'use strict';
+const {
+  isObject,
+  isNode,
+  isFunction
+} = require('../util');
 
-let {
-    map
-} = require('bolzano');
-let {
-    isObject, isNode
-} = require('basetype');
+const parseArgs = require('./parseArgs');
 
-let parseArgs = require('./parseArgs');
-
-let parseStyle = require('./parseStyle');
+const parseStyle = require('./parseStyle');
 
 const KABANERY_NODE = 'kabanery_node';
 
-// TODO general proxy n way
+const KABANERY_RENDER_NODE = 'kabanery_high_node';
 
-let cn = (elementType) => {
-    return (...args) => {
-        let {
-            tagName, attributes, childs
-        } = parseArgs(args);
+const isKabaneryNode = (v) => isObject(v) && v.type === KABANERY_NODE;
 
-        if (isKabaneryNode(attributes)) {
-            childs = [attributes];
-            attributes = {};
-        }
+const isKabaneryRenderNode = (v) => isObject(v) && v.type === KABANERY_RENDER_NODE;
 
-        // plugin
-        runPlugins(attributes['plugin'], tagName, attributes, childs);
-
-        let {
-            attrMap, eventMap
-        } = splitAttribues(attributes);
-
-        return {
-            tagName,
-            attrMap,
-            eventMap,
-            elementType,
-            type: KABANERY_NODE, childNodes: childs,
-        };
-    };
-};
-
-let isKabaneryNode = (v) => isObject(v) && v.type === KABANERY_NODE;
-
-let bindPlugs = (typen, plugs = []) => (...args) => {
-    let {
-        tagName, attributes, childs
-    } = parseArgs(args);
-
-    let oriPlugs = attributes.plugin = attributes.plugin || [];
-    attributes.plugin = oriPlugs.concat(plugs);
-
-    let node = typen(tagName, attributes, childs);
-
-    return node;
-};
-
-let runPlugins = (plugs = [], tagName, attributes, childExp) => {
-    for (let i = 0; i < plugs.length; i++) {
-        let plug = plugs[i];
-        plug && plug(tagName, attributes, childExp);
-    }
-};
-
-let splitAttribues = (attributes) => {
-    let attrMap = {},
-        eventMap = {};
-    for (let name in attributes) {
-        let item = attributes[name];
-        if (name.indexOf('on') === 0) {
-            eventMap[name.substring(2)] = item;
-        } else if (name !== 'plugin') {
-            attrMap[name] = item;
-        }
-    }
-    return {
-        attrMap,
-        eventMap
-    };
-};
-
-// TODO svg
-let toHTML = (node) => {
-    if (isNode(node)) {
-        return node.outerHTML;
-    } else if (isKabaneryNode(node)) {
-        let {
-            tagName, attrMap, childNodes
-        } = node;
-        let attrStr = map(attrMap, (value, key) => `${key}="${value}"`).join(' ');
-        attrStr = attrStr ? ' ' + attrStr : '';
-        return `<${tagName}${attrStr}>${map(childNodes, toHTML).join('')}</${tagName}>`;
+const knodeCreator = (elementType) => {
+  return (...args) => {
+    if (isFunction(args[0])) { // render function
+      return createRenderNode(elementType, args);
     } else {
-        return node + '';
+      return createKabaneryNode(elementType, args);
     }
+  };
+};
+
+/**
+ * render: (...args) => kabaneryNode
+ */
+const createRenderNode = (elementType, args) => {
+  return {
+    render: args[0],
+    args: args.slice(1),
+    elementType,
+    type: KABANERY_RENDER_NODE,
+  };
+};
+
+const createKabaneryNode = (elementType, args) => {
+  let {
+    tagName,
+    attributes,
+    childs
+  } = parseArgs(args);
+
+  if (isKabaneryNode(attributes) ||
+    isNode(attributes)) {
+    childs = [attributes];
+    attributes = {};
+  }
+
+  const {
+    attrMap,
+    eventMap
+  } = splitAttribues(attributes);
+
+  return {
+    tagName,
+    attrMap,
+    eventMap,
+    elementType,
+    type: KABANERY_NODE,
+    childNodes: childs,
+  };
+};
+
+/**
+ * split event handlers
+ */
+let splitAttribues = (attributes) => {
+  const attrMap = {},
+    eventMap = {};
+  for (const name in attributes) {
+    const item = attributes[name];
+    if (name.indexOf('on') === 0) {
+      eventMap[name.substring(2)] = item;
+    } else {
+      attrMap[name] = item;
+    }
+  }
+  return {
+    attrMap,
+    eventMap
+  };
 };
 
 module.exports = {
-    n: cn('html'),
-    svgn: cn('svg'),
-    cn,
-    bindPlugs,
-    isKabaneryNode,
-    toHTML,
-    parseArgs,
-    parseStyle
+  n: knodeCreator('html'),
+  svgn: knodeCreator('svg'),
+  knodeCreator,
+  isKabaneryNode,
+  isKabaneryRenderNode,
+  parseArgs,
+  parseStyle
 };

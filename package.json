@@ -1,6 +1,6 @@
 {
   "name": "kabanery",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "Data-driven, easy-composing front end view definition\n[readme-lang:zh]数据驱动易于组合的组件定义模式",
   "main": "index.js",
   "scripts": {
@@ -32,8 +32,10 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "browser-js-env": "^0.1.3",
+    "babel-eslint": "^8.2.2",
+    "browser-js-env": "^0.1.4",
     "es6-promisify": "^5.0.0",
+    "eslint": "^4.19.1",
     "istanbul": "^0.4.5",
     "jsdom": "^9.4.1",
     "mocha": "^3.0.2",

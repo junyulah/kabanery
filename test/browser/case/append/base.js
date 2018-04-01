@@ -1,21 +1,21 @@
 'use strict';
 
 let {
-    n, view, mount
+  n, view, mount
 } = require('../../../..');
 
 let assert = require('assert');
 
 let TestView = view((_, {
-    appendView
+  appendView
 }) => {
-    return n('div id="action"', {
-        onclick: () => {
-            appendView(n('li', '123'));
-        }
-    }, [
-        n('div', 'good')
-    ]);
+  return n('div id="action"', {
+    onclick: () => {
+      appendView(n('li', '123'));
+    }
+  }, [
+    n('div', 'good')
+  ]);
 });
 
 mount(TestView({}), document.body);

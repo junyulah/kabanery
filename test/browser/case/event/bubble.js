@@ -1,7 +1,7 @@
 'use strict';
 
 let {
-    n, view, mount
+  n, view, mount
 } = require('../../../..');
 
 let assert = require('assert');
@@ -9,13 +9,13 @@ let assert = require('assert');
 let detect = false;
 
 let TestView = view(() => {
-    return n('div', {
-        onclick: () => {
-            detect = !detect;
-        }
-    }, [
-        n('div id="child"')
-    ]);
+  return n('div', {
+    onclick: () => {
+      detect = !detect;
+    }
+  }, [
+    n('div id="child"')
+  ]);
 });
 
 mount(TestView(), document.body);

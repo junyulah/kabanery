@@ -5,139 +5,115 @@ let jsdom = require('jsdom');
 let assert = require('assert');
 
 let {
-    n, view, mount, N
+  n,
+  view,
+  mount
 } = require('../../index');
 
 describe('index', () => {
-    it('base', (done) => {
-        jsdom.env('<p></p>', (err, window) => {
-            global.document = window.document;
-            let ret = n('div');
-            assert.equal(ret.tagName.toUpperCase(), 'DIV');
-            done();
-        });
+  it('base', (done) => {
+    jsdom.env('<p></p>', (err, window) => {
+      global.document = window.document;
+      let ret = n('div');
+      assert.equal(ret.tagName.toUpperCase(), 'DIV');
+      done();
     });
+  });
 
-    it('childExp', (done) => {
-        jsdom.env('<p></p>', (err, window) => {
-            global.document = window.document;
-            let ret = n('div', [n('p'), n('prev')]);
-            assert.equal(ret.childNodes.length, 2);
-            done();
-        });
+  it('childExp', (done) => {
+    jsdom.env('<p></p>', (err, window) => {
+      global.document = window.document;
+      let ret = n('div', [n('p'), n('prev')]);
+      assert.equal(ret.childNodes.length, 2);
+      done();
     });
+  });
 
-    it('mount', (done) => {
-        jsdom.env('<p id="test"></p>', (err, window) => {
-            global.document = window.document;
+  it('mount', (done) => {
+    jsdom.env('<p id="test"></p>', (err, window) => {
+      global.document = window.document;
 
-            mount(n('div', [
-                n('button', '123')
-            ]), document.getElementById('test'));
+      mount(n('div', [
+        n('button', '123')
+      ]), document.getElementById('test'));
 
-            assert.equal(document.body.innerHTML, '<p id="test"><div><button>123</button></div></p>');
+      assert.equal(document.body.innerHTML, '<p id="test"><div><button>123</button></div></p>');
 
-            done();
-        });
+      done();
     });
+  });
 
-    it('html node as child', (done) => {
-        jsdom.env('<p id="test"></p>', (err, window) => {
-            global.document = window.document;
-
-            let div = document.createElement('div');
-            div.textContent = '123';
-
-            mount(n('div', [
-                div
-            ]), document.getElementById('test'));
-
-            assert.equal(document.body.innerHTML, '<p id="test"><div><div>123</div></div></p>');
-
-            done();
-        });
+  it('kabanery render node', (done) => {
+    jsdom.env('<p id="test"></p>', (err, window) => {
+      global.document = window.document;
+      mount(n((text) => n('div', text), '123'), document.getElementById('test'));
+      assert.equal(document.body.innerHTML, '<p id="test"><div>123</div></p>');
+      done();
     });
+  });
 
-    it('view', (done) => {
-        jsdom.env('<p></p>', (err, window) => {
-            global.document = window.document;
+  it('html node as child', (done) => {
+    jsdom.env('<p id="test"></p>', (err, window) => {
+      global.document = window.document;
 
-            let widget = view((data) => {
-                return n('div', [
-                    n('button', data.btnText)
-                ]);
-            });
+      let div = document.createElement('div');
+      div.textContent = '123';
 
-            let node = widget({
-                btnText: 'a button'
-            });
+      mount(n('div', [
+        div
+      ]), document.getElementById('test'));
 
-            mount(node, document.body);
+      assert.equal(document.body.innerHTML, '<p id="test"><div><div>123</div></div></p>');
 
-            assert.equal(document.body.innerHTML, '<p></p><div><button>a button</button></div>');
-            done();
-        });
+      done();
     });
+  });
 
-    it('update', (done) => {
-        jsdom.env('<p></p>', (err, window) => {
-            global.document = window.document;
-            let widget = view((data, {
-                update, getNode
-            }) => {
-                setTimeout(() => {
-                    update('btnText', 'changed button');
-                    let node = getNode();
-                    assert.equal(node.childNodes[0].textContent, 'changed button');
+  it('view', (done) => {
+    jsdom.env('<p></p>', (err, window) => {
+      global.document = window.document;
 
-                    done();
-                }, 50);
-                return n('div', [
-                    n('button', data.btnText)
-                ]);
-            });
+      let widget = view((data) => {
+        return n('div', [
+          n('button', data.btnText)
+        ]);
+      });
 
-            let node = widget({
-                btnText: 'a button'
-            });
+      let node = widget({
+        btnText: 'a button'
+      });
 
-            mount(node, document.body);
-        });
+      mount(node, document.body);
+
+      assert.equal(document.body.innerHTML, '<p></p><div><button>a button</button></div>');
+      done();
     });
+  });
 
-    it('N', (done) => {
-        jsdom.env('', (err, window) => {
-            global.document = window.document;
+  it('update', (done) => {
+    jsdom.env('<p></p>', (err, window) => {
+      global.document = window.document;
+      let widget = view((data, {
+        update,
+        getNode
+      }) => {
+        setTimeout(() => {
+          update('btnText', 'changed button');
+          let node = getNode();
+          assert.equal(node.childNodes[0].textContent, 'changed button');
 
-            let ui = view(() => {
-                return n('div');
-            });
+          done();
+        }, 50);
+        return n('div', [
+          n('button', data.btnText)
+        ]);
+      });
 
-            let ui2 = N('p', ui);
+      let node = widget({
+        btnText: 'a button'
+      });
 
-            mount(ui2({}), document.body);
-
-            assert.equal(document.body.innerHTML, '<p><div></div></p>');
-
-            done();
-        });
+      mount(node, document.body);
     });
-
-    it('N2', (done) => {
-        jsdom.env('', (err, window) => {
-            global.document = window.document;
-
-            let ui = view(() => {
-                return n('div');
-            });
-
-            let ui2 = N('p', [ui, n('span'), [n('h1'), n('h2')]]);
-
-            mount(ui2({}), document.body);
-
-            assert.equal(document.body.innerHTML, '<p><div></div><span></span><h1></h1><h2></h2></p>');
-
-            done();
-        });
-    });
+  });
 });

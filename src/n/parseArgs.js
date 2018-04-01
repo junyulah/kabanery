@@ -1,90 +1,90 @@
 'use strict';
 
-let parseAttribute = require('./parseAttribute');
+const parseAttribute = require('./parseAttribute');
 
-let {
-    isString,
-    isObject,
-    isNode,
-    likeArray,
-    isNumber,
-    isBool
-} = require('basetype');
+const {
+  isString,
+  isObject,
+  isNode,
+  likeArray,
+  isNumber,
+  isBool
+} = require('../util');
 
-let parseArgs = (args, {
-    doParseStyle = true
+const parseArgs = (args, {
+  doParseStyle = true
 } = {}) => {
-    let tagName,
-        attributes = {},
-        childExp = [];
+  let tagName,
+    attributes = {},
+    childExp = [];
 
-    let first = args.shift();
+  let first = args.shift();
 
-    let parts = splitTagNameAttribute(first);
+  let parts = splitTagNameAttribute(first);
 
-    if (parts.length > 1) { // not only tagName
-        tagName = parts[0];
-        attributes = parts[1];
-    } else {
-        tagName = first;
-    }
+  if (parts.length > 1) { // not only tagName
+    tagName = parts[0];
+    attributes = parts[1];
+  } else {
+    tagName = first;
+  }
 
-    let next = args.shift();
+  let next = args.shift();
 
-    let nextAttr = {};
+  let nextAttr = {};
 
-    if (likeArray(next) ||
+  if (likeArray(next) ||
         isString(next) ||
         isNode(next) ||
         isNumber(next) ||
         isBool(next)) {
-        childExp = next;
-    } else if (isObject(next)) {
-        nextAttr = next;
-        childExp = args.shift() || [];
-    }
+    childExp = next;
+  } else if (isObject(next)) {
+    nextAttr = next;
+    childExp = args.shift() || [];
+  }
 
-    attributes = parseAttribute(attributes, nextAttr, {
-        doParseStyle
-    });
+  attributes = parseAttribute(attributes, nextAttr, {
+    doParseStyle
+  });
 
-    let childs = parseChildExp(childExp);
+  let childs = parseChildExp(childExp);
 
-    return {
-        tagName,
-        attributes,
-        childs
-    };
+  return {
+    tagName,
+    attributes,
+    childs
+  };
 };
 
 let splitTagNameAttribute = (str = '') => {
-    if (typeof str !== 'string') return [str];
+  if (typeof str !== 'string') return [str];
 
-    let tagName = str.split(' ')[0];
-    let attr = str.substring(tagName.length);
-    attr = attr && attr.trim();
+  let tagName = str.split(' ')[0];
+  let attr = str.substring(tagName.length);
+  attr = attr && attr.trim();
 
-    tagName = tagName.toLowerCase().trim();
-    if (attr) {
-        return [tagName, attr];
-    } else {
-        return [tagName];
-    }
+  tagName = tagName.toLowerCase().trim();
+  if (attr) {
+    return [tagName, attr];
+  } else {
+    return [tagName];
+  }
 };
 
-let parseChildExp = (childExp) => {
-    let ret = [];
-    if (isNode(childExp)) {
-        ret.push(childExp);
-    } else if (likeArray(childExp)) {
-        for (let i = 0; i < childExp.length; i++) {
-            let child = childExp[i];
-            ret = ret.concat(parseChildExp(child));
-        }
-    } else if (childExp) {
-        ret.push(childExp);
+const parseChildExp = (childExp) => {
+  let ret = [];
+  if (isNode(childExp)) {
+    ret.push(childExp);
+  } else if (likeArray(childExp)) {
+    for (let i = 0; i < childExp.length; i++) {
+      let child = childExp[i];
+      ret = ret.concat(parseChildExp(child));
     }
-    return ret;
+  } else if (childExp) {
+    ret.push(childExp);
+  }
+  return ret;
 };
 
 module.exports = parseArgs;

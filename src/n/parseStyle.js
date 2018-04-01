@@ -1,59 +1,62 @@
 'use strict';
 
-let {
-    isString,
-    isObject
-} = require('basetype');
+const {
+  isString,
+  isObject
+} = require('../util');
 
 module.exports = (attr = '', {
-    keyWrapper,
-    valueWrapper
+  keyWrapper,
+  valueWrapper
 } = {}) => {
-    if (isString(attr)) {
-        return attr;
+  if (isString(attr)) {
+    return attr;
+  }
+
+  if (!isObject(attr)) {
+    throw new TypeError(`Expect object for style object, but got ${attr}`);
+  }
+
+  const styles = [];
+
+  for (let key in attr) {
+    let value = attr[key];
+    key = convertStyleKey(key);
+    value = convertStyleValue(value, key);
+    if (keyWrapper) {
+      key = keyWrapper(key, value);
     }
 
-    if (!isObject(attr)) {
-        throw new TypeError(`Expect object for style object, but got ${attr}`);
+    if (valueWrapper) {
+      value = valueWrapper(value, key);
     }
-    let styles = [];
-    for (let key in attr) {
-        let value = attr[key];
-        key = convertStyleKey(key);
-        value = convertStyleValue(value, key);
-        if (keyWrapper) {
-            key = keyWrapper(key, value);
-        }
 
-        if (valueWrapper) {
-            value = valueWrapper(value, key);
-        }
+    styles.push(`${key}: ${value};`);
+  }
 
-        styles.push(`${key}: ${value};`);
-    }
-    return styles.join('');
+  return styles.join('');
 };
 
-let convertStyleKey = (key) => {
-    return key.replace(/[A-Z]/, (letter) => {
-        return `-${letter.toLowerCase()}`;
-    });
+const convertStyleKey = (key) => {
+  return key.replace(/[A-Z]/, (letter) => {
+    return `-${letter.toLowerCase()}`;
+  });
 };
 
-let convertStyleValue = (value, key) => {
-    if (typeof value === 'number' && key !== 'z-index') {
-        return value + 'px';
+const convertStyleValue = (value, key) => {
+  if (typeof value === 'number' && key !== 'z-index') {
+    return value + 'px';
+  }
+  if (key === 'padding' || key === 'margin') {
+    let parts = value.split(' ');
+    for (let i = 0; i < parts.length; i++) {
+      let part = parts[i];
+      if (!isNaN(Number(part))) {
+        parts[i] = part + 'px';
+      }
     }
-    if (key === 'padding' || key === 'margin') {
-        let parts = value.split(' ');
-        for (let i = 0; i < parts.length; i++) {
-            let part = parts[i];
-            if (!isNaN(Number(part))) {
-                parts[i] = part + 'px';
-            }
-        }
 
-        value = parts.join(' ');
-    }
-    return value;
+    value = parts.join(' ');
+  }
+  return value;
 };

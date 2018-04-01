@@ -3,28 +3,28 @@
 let EventMatrix = require('./eventMatrix');
 
 let {
-    eventMapHook
+  eventMapHook
 } = require('../const');
 
 let {
-    listenEventType,
-    clearEvents,
-    attachDocument,
-    dispatchEvent
+  listenEventType,
+  clearEvents,
+  attachDocument,
+  dispatchEvent
 } = EventMatrix();
 
 let bindEvents = (node, eventMap) => {
-    // hook event at node
-    node[eventMapHook] = eventMap;
+  // hook event at node
+  node[eventMapHook] = eventMap;
 
-    for (let type in eventMap) {
-        listenEventType(type);
-    }
+  for (let type in eventMap) {
+    listenEventType(type);
+  }
 };
 
 module.exports = {
-    bindEvents,
-    attachDocument,
-    dispatchEvent,
-    clearEvents
+  bindEvents,
+  attachDocument,
+  dispatchEvent,
+  clearEvents
 };
