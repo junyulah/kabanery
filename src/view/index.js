@@ -16,14 +16,6 @@ const ViewContext = function(view, obj) {
   this.data = obj;
   this.render = view;
   this.kNode = null;
-
-  this.exports = {
-    update: (...args) => this.update(...args),
-    appendView: (...args) => this.appendView(...args),
-    getNode: () => this.node,
-    getData: () => this.data,
-    getKNode: () => this.kNode
-  };
 };
 
 ViewContext.prototype = {
@@ -45,39 +37,64 @@ ViewContext.prototype = {
     this.node = replace(this.node, newKNode, this.kNode);
     this.kNode = newKNode;
     if (this.node) {
-      this.node.ctx = this;
+      this.node.ctx = this.getContext();
     }
     return this.node;
   },
 
   getKabaneryNode: function() {
-    let ret = this.render(this.data, this.exports);
+    let ret = this.render(this.data, this.getContext());
 
     if (isFunction(ret)) {
       this.render = ret;
-      return this.render(this.data, this.exports);
+      return this.render(this.data, this.getContext());
     } else {
       return ret;
     }
   },
 
+  getNode: function() {
+    return this.node;
+  },
+
   // TODO refator
   transferCtx: function(newNode) {
-    newNode.ctx = this;
+    newNode.ctx = this.getContext();
     this.node = newNode;
+  },
+
+  getContext: function() {
+    return this._ctx;
   }
+};
+
+var getViewContext = (view, obj) => {
+  const _ctx = {};
+
+  const ctxInst = new ViewContext(view, obj);
+
+  ctxInst._ctx = _ctx;
+
+  for (const name in ViewContext.prototype) {
+    if (name !== 'construct') {
+      _ctx[name] = (...args) => ctxInst[name].apply(ctxInst, args);
+    }
+  }
+
+  return _ctx;
 };
 
 module.exports = {
   view: (view) => {
     return (obj) => {
       // create context
-      const ctx = new ViewContext(view, obj);
+      const ctx = getViewContext(view, obj);
       // render node
       const viewNode = n(() => ctx.renderView());
       // export context
       viewNode.ctx = ctx;
       viewNode.__isViewNode = true;
+
       return viewNode;
     };
   },
