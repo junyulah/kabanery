@@ -57,6 +57,10 @@ ViewContext.prototype = {
     return this.node;
   },
 
+  getData: function() {
+    return this.data;
+  },
+
   // TODO refator
   transferCtx: function(newNode) {
     newNode.ctx = this.getContext();
@@ -99,5 +103,6 @@ module.exports = {
     };
   },
 
+  // TODO exports interface to expand context prototype
   isViewNode
 };
