@@ -53,6 +53,10 @@ ViewContext.prototype = {
     }
   },
 
+  getKNode: function() {
+    return this.kNode;
+  },
+
   getNode: function() {
     return this.node;
   },
@@ -89,10 +93,10 @@ var getViewContext = (view, obj) => {
 };
 
 module.exports = {
-  view: (view) => {
+  view: (viewFun) => {
     return (obj) => {
       // create context
-      const ctx = getViewContext(view, obj);
+      const ctx = getViewContext(viewFun, obj);
       // render node
       const viewNode = n(() => ctx.renderView());
       // export context

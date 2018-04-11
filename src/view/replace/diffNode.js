@@ -88,7 +88,7 @@ const diffNode = (node, newKNode, oldKNode) => {
   if (!isNode(node)) return node;
 
   if (isViewNode(newKNode) && isViewNode(oldKNode)) {
-    return diffNode(node, newKNode.ctx.getKabaneryNode(), oldKNode.ctx.kNode);
+    return diffNode(node, newKNode.ctx.getKabaneryNode(), oldKNode.ctx.getKNode());
   } else if (isKabaneryNode(newKNode) && isKabaneryNode(oldKNode)) {
     if (getTagName(oldKNode) !== getTagName(newKNode)) {
       return replaceDirectly(node, newKNode);
