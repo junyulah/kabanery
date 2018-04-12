@@ -63,7 +63,7 @@ const diffList = (newKChilds, oldKChilds, parent) => {
 
   // remove
   for (let i = newLen; i < oldLen; i++) {
-    removeNode(childNodes[i]);
+    childNodes[i] && removeNode(childNodes[i]);
   }
 
   // diff
@@ -80,13 +80,14 @@ const diffList = (newKChilds, oldKChilds, parent) => {
 const diffNode = (node, newKNode, oldKNode) => {
   if (!isNode(node)) return node;
 
-  if (isViewNode(newKNode) && isViewNode(oldKNode)) {
-    return diffNode(node, newKNode.ctx.getKabaneryNode(), oldKNode.ctx.getKNode());
-  } else if (isKabaneryNode(newKNode) && isKabaneryNode(oldKNode)) {
-    if (getTagName(oldKNode) !== getTagName(newKNode)) {
-      return replaceDirectly(node, newKNode);
+  const newKabNode = isViewNode(newKNode) ? newKNode.ctx.getKabaneryNode() : newKNode;
+  const oldKabNode = isViewNode(oldKNode) ? oldKNode.ctx.getKabaneryNode() : oldKNode;
+
+  if (isKabaneryNode(newKabNode) && isKabaneryNode(oldKabNode)) {
+    if (getTagName(oldKabNode) !== getTagName(newKabNode)) {
+      return replaceDirectly(node, newKabNode);
     } else {
-      editNode(node, newKNode, oldKNode);
+      editNode(node, newKabNode, oldKabNode);
       return node;
     }
   } else {
