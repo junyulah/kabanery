@@ -1,6 +1,7 @@
 'use strict';
 
 const {
+  isNode,
   createElement,
   createSvgElement
 } = require('../util');
@@ -29,8 +30,10 @@ const toDomNode = (node) => {
     return tarNode;
   } else if (isKabaneryRenderNode(node)) {
     return toDomNode(resolveKRenderNode(node));
-  } else {
+  } else if (isNode(node)) {
     return node;
+  } else {
+    return document.createTextNode(node.toString());
   }
 };
 

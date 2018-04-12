@@ -31,16 +31,9 @@ const replaceDirectly = (node, newKNode) => {
     return newNode;
   }
 
-  if (isNode(newNode)) {
-    // replace
-    parent.replaceChild(newNode, node);
-    return newNode;
-  } else {
-    const text = newNode.toString();
-    const textNode = document.createTextNode(text);
-    parent.replaceChild(textNode, node);
-    return textNode;
-  }
+  // replace
+  parent.replaceChild(newNode, node);
+  return newNode;
 };
 
 // node and newKNode have the same tagName
