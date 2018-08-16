@@ -8,7 +8,7 @@ const puppeteer = require('puppeteer');
 
 const readFile = promisify(fs.readFile);
 
-const headlessOpen = async(url) => {
+const headlessOpen = async (url) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url, {
@@ -42,6 +42,7 @@ let testFiles = {
   'event:updatePassingView': path.join(__dirname, '../browser/case/event/updatePassingView.js'),
   'event:stopPropagation': path.join(__dirname, '../browser/case/event/stopPropagation.js'),
   'update:base': path.join(__dirname, '../browser/case/update/base.js'),
+  'update:insideview': path.join(__dirname, '../browser/case/update/insideView.js'),
   'append:base': path.join(__dirname, '../browser/case/append/base.js'),
   'svg:base': path.join(__dirname, '../browser/case/svg/base.js'),
 

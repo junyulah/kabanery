@@ -21,7 +21,7 @@ const getTextAreaTextContent = (node) => {
   if (isNode(node)) {
     return node.textContent;
   } else {
-    return node.children[0];
+    return (node.childNodes.length && node.childNodes[0]) || '';
   }
 };
 
