@@ -42,10 +42,13 @@ ViewContext.prototype = {
     return this.node;
   },
 
+  /**
+   * run render function and get the tree based on n function
+   */
   getKabaneryNode: function() {
-    let ret = this.render(this.data, this.getContext());
+    const ret = this.render(this.data, this.getContext());
 
-    if (isFunction(ret)) {
+    if (isFunction(ret)) { // closure
       this.render = ret;
       return this.render(this.data, this.getContext());
     } else {

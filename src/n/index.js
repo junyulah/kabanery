@@ -69,7 +69,7 @@ const createKabaneryNode = (elementType, args) => {
 /**
  * split event handlers
  */
-let splitAttribues = (attributes) => {
+const splitAttribues = (attributes) => {
   const attrMap = {},
     eventMap = {};
   for (const name in attributes) {

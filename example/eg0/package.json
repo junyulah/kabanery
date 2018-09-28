@@ -9,7 +9,7 @@
   "author": "ddchen",
   "license": "MIT",
   "dependencies": {
-    "kabanery": "^0.2.19"
+    "kabanery": "git+https://github.com/LoveKino/kabanery.git"
   },
   "devDependencies": {
     "webpack": "^4.5.0",
