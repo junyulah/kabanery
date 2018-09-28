@@ -89,31 +89,4 @@ describe('index', () => {
       done();
     });
   });
-
-  it('update', (done) => {
-    jsdom.env('<p></p>', (err, window) => {
-      global.document = window.document;
-      let widget = view((data, {
-        update,
-        getNode
-      }) => {
-        setTimeout(() => {
-          update('btnText', 'changed button');
-          let node = getNode();
-          assert.equal(node.childNodes[0].textContent, 'changed button');
-
-          done();
-        }, 50);
-        return n('div', [
-          n('button', data.btnText)
-        ]);
-      });
-
-      let node = widget({
-        btnText: 'a button'
-      });
-
-      mount(node, document.body);
-    });
-  });
 });
