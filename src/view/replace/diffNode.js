@@ -81,7 +81,7 @@ const diffNode = (node, newKNode, oldKNode) => {
   if (!isNode(node)) return node;
 
   const newKabNode = isViewNode(newKNode) ? newKNode.ctx.getKabaneryNode() : newKNode;
-  const oldKabNode = isViewNode(oldKNode) ? oldKNode.ctx.getKNode() : oldKNode;
+  const oldKabNode = isViewNode(oldKNode) ? oldKNode.ctx.getKabaneryNode() : oldKNode;
 
   if (isKabaneryNode(newKabNode) && isKabaneryNode(oldKabNode)) {
     if (getTagName(oldKabNode) !== getTagName(newKabNode)) {
