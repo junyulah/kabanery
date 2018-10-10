@@ -112,6 +112,34 @@ const emptyChildren = (node) => {
   }
 };
 
+const getTagName = (node) => {
+  return node.tagName.toUpperCase();
+};
+
+const getAttrMap = (node) => {
+  if (isNode(node)) {
+    return getAttributeMap(node.attributes);
+  } else { // kabanery node
+    return node.attrMap;
+  }
+};
+
+const getTextAreaTextContent = (node) => {
+  if (isNode(node)) {
+    return node.textContent;
+  } else {
+    return (node.childNodes.length && node.childNodes[0]) || '';
+  }
+};
+
+const getAttributeValue = (node, key) => {
+  if (isNode(node)) {
+    return node.getAttribute(key);
+  } else {
+    return node.attrMap[key];
+  }
+};
+
 module.exports = {
   toArray,
   isNode,
@@ -128,5 +156,10 @@ module.exports = {
   getAttributeMap,
   removeNode,
   hasOwnProperty,
-  emptyChildren
+  emptyChildren,
+  getTagName,
+  getAttrMap,
+  getTextAreaTextContent,
+  getAttributeValue
+
 };

@@ -1,7 +1,6 @@
 const {
   isObject,
-  isNode,
-  isFunction
+  isNode
 } = require('../util');
 
 const parseArgs = require('./parseArgs');
@@ -10,31 +9,14 @@ const parseStyle = require('./parseStyle');
 
 const KABANERY_NODE = 'kabanery_node';
 
-const KABANERY_RENDER_NODE = 'kabanery_high_node';
-
 const isKabaneryNode = (v) => isObject(v) && v.type === KABANERY_NODE;
 
-const isKabaneryRenderNode = (v) => isObject(v) && v.type === KABANERY_RENDER_NODE;
-
+/**
+ * elementType: html, svg
+ */
 const knodeCreator = (elementType) => {
   return (...args) => {
-    if (isFunction(args[0])) { // render function
-      return createRenderNode(elementType, args);
-    } else {
-      return createKabaneryNode(elementType, args);
-    }
-  };
-};
-
-/**
- * render: (...args) => kabaneryNode
- */
-const createRenderNode = (elementType, args) => {
-  return {
-    render: args[0],
-    args: args.slice(1),
-    elementType,
-    type: KABANERY_RENDER_NODE,
+    return createKabaneryNode(elementType, args);
   };
 };
 
@@ -91,7 +73,6 @@ module.exports = {
   svgn: knodeCreator('svg'),
   knodeCreator,
   isKabaneryNode,
-  isKabaneryRenderNode,
   parseArgs,
   parseStyle
 };

@@ -24,7 +24,7 @@ let TestView = view(({
       update('state', 'updated');
     }
   }, [
-    n(TmpView, {
+    TmpView({
       state
     })
   ]);

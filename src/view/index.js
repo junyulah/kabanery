@@ -3,19 +3,15 @@ const {
 } = require('../util');
 const updateData = require('./updateData');
 const replace = require('./replace');
-const isViewNode = require('./isViewNode');
-const {
-  n
-} = require('../n');
 const {
   mount
 } = require('../resolver');
 
-const ViewContext = function(view, obj) {
-  this.node = null;
+const ViewContext = function(render, obj) {
+  this.nativeNode = null; // record corresponding native node
   this.data = obj;
-  this.render = view;
-  this.kNode = null;
+  this.render = render;
+  this.kNode = null; // cache old kabanery node
 };
 
 ViewContext.prototype = {
@@ -23,36 +19,47 @@ ViewContext.prototype = {
 
   update: function(...args) {
     updateData(this.data, args);
-    return this.renderView();
+    return this.renderNativeView();
   },
 
+  // for some special situation, like log view
+  // TODO prepend?
   appendView: function(itemView) {
-    if (this.node) {
-      mount(itemView, this.node);
+    if (this.nativeNode) {
+      mount(itemView, this.nativeNode);
     }
   },
 
-  renderView: function() {
+  /**
+   * render view according to current data
+   *
+   * do the diff to reduce dom operations
+   */
+  renderNativeView: function() {
     const newKNode = this.getKabaneryNode();
-    this.node = replace(this.node, newKNode, this.kNode);
+    this.nativeNode = replace(this.nativeNode, newKNode, this.kNode);
+    // update KNode to latest
     this.kNode = newKNode;
-    if (this.node) {
-      this.node.ctx = this.getContext();
-    }
-    return this.node;
+    return this.nativeNode;
   },
 
   /**
    * run render function and get the tree based on n function
    */
-  getKabaneryNode: function() {
-    const ret = this.render(this.data, this.getContext());
+  renderKabaneryNode: function() {
+    this.kNode = this.getKabaneryNode();
+    return this.kNode;
+  },
 
-    if (isFunction(ret)) { // closure
-      this.render = ret;
-      return this.render(this.data, this.getContext());
+  getKabaneryNode: function() {
+    const kNode = this.render(this.data, this.getContext());
+
+    if (isFunction(kNode)) { // closure
+      this.render = kNode;
+      return this.getKabaneryNode(this.data, this.getContext());
     } else {
-      return ret;
+      kNode.ctx = this.getContext(); // hook the content
+      return kNode;
     }
   },
 
@@ -60,22 +67,20 @@ ViewContext.prototype = {
     return this.kNode;
   },
 
-  getNode: function() {
-    return this.node;
+  getNativeNode: function() {
+    return this.nativeNode;
   },
 
   getData: function() {
     return this.data;
   },
 
-  // TODO refator
-  transferCtx: function(newNode) {
-    newNode.ctx = this.getContext();
-    this.node = newNode;
-  },
-
   getContext: function() {
     return this._ctx;
+  },
+
+  bindNativeNode: function(node) {
+    this.nativeNode = node;
   }
 };
 
@@ -96,20 +101,22 @@ var getViewContext = (view, obj) => {
 };
 
 module.exports = {
+  /**
+   * create a view class
+   */
   view: (viewFun) => {
+    /**
+     * create a view instance
+     *
+     * (data) -> nativeNode
+     */
     return (obj) => {
       // create context
       const ctx = getViewContext(viewFun, obj);
       // render node
-      const viewNode = n(() => ctx.renderView());
-      // export context
-      viewNode.ctx = ctx;
-      viewNode.__isViewNode = true;
+      const kNode = ctx.renderKabaneryNode();
 
-      return viewNode;
+      return kNode;
     };
-  },
-
-  // TODO exports interface to expand context prototype
-  isViewNode
+  }
 };
