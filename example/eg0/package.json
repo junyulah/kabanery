@@ -12,7 +12,7 @@
     "kabanery": "git+https://github.com/LoveKino/kabanery.git"
   },
   "devDependencies": {
-    "webpack": "^4.5.0",
-    "webpack-cli": "^3.1.1"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   }
 }
